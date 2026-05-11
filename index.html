@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculadora Matemática</title>
-
-    <!-- Chart.js -->
+    <title>Calculadora Matemática PRO MAX</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -17,12 +15,13 @@
             background: #2e2e3f;
             padding: 20px;
             margin: 20px auto;
-            width: 300px;
+            width: 340px;
             border-radius: 10px;
         }
         input, button {
             margin: 5px;
             padding: 10px;
+            width: 70px;
         }
         button {
             background: #00bcd4;
@@ -37,106 +36,171 @@
         }
     </style>
 </head>
+
 <body>
 
-<h1>Calculadora Matemática</h1>
+<h1>📊 Calculadora Matemática PRO MAX</h1>
 
+<!-- LINEAL -->
 <div class="card">
-    <h2>Ecuación Lineal</h2>
-    <input id="a" placeholder="a">
-    <input id="b" placeholder="b">
-    <button onclick="resolverLineal()">Resolver</button>
-    <p id="resLineal"></p>
-    <canvas id="graficaLineal"></canvas>
+<h2>Lineal</h2>
+
+<p>Forma: y = ax + b</p>
+<input id="a"><input id="b">
+<button onclick="linealAB()">Resolver</button>
+
+<p>Dos puntos</p>
+<input id="x1"><input id="y1">
+<input id="x2"><input id="y2">
+<button onclick="linealPuntos()">Resolver</button>
+
+<p id="resL"></p>
+<canvas id="gL"></canvas>
 </div>
 
+<!-- CUADRATICA -->
 <div class="card">
-    <h2>Cuadrática</h2>
-    <input id="a2" placeholder="a">
-    <input id="b2" placeholder="b">
-    <input id="c2" placeholder="c">
-    <button onclick="resolverCuadratica()">Resolver</button>
-    <p id="resCuad"></p>
-    <canvas id="graficaCuad"></canvas>
+<h2>Cuadrática</h2>
+
+<p>Forma: ax² + bx + c</p>
+<input id="a2"><input id="b2"><input id="c2">
+<button onclick="cuadABC()">Resolver</button>
+
+<p>Factorizada (raíces)</p>
+<input id="r1"><input id="r2">
+<button onclick="cuadFact()">Resolver</button>
+
+<p id="resC"></p>
+<canvas id="gC"></canvas>
+</div>
+
+<!-- SISTEMA -->
+<div class="card">
+<h2>Sistema 2x2</h2>
+
+<p>a1x + b1y = c1</p>
+<input id="a1"><input id="b1"><input id="c1">
+
+<p>a2x + b2y = c2</p>
+<input id="a22"><input id="b22"><input id="c22">
+
+<button onclick="resolverSistema()">Resolver</button>
+
+<p id="resS"></p>
+<canvas id="gS"></canvas>
 </div>
 
 <script>
-let grafica1 = null;
-let grafica2 = null;
+let g1,g2,g3;
 
-function resolverLineal() {
-    let a = parseFloat(document.getElementById("a").value);
-    let b = parseFloat(document.getElementById("b").value);
+// LINEAL AB
+function linealAB(){
+let a=parseFloat(a.value),b=parseFloat(b.value);
 
-    if (isNaN(a) || isNaN(b)) {
-        alert("Ingresa valores válidos");
-        return;
-    }
+let x=[],y=[];
+for(let i=-10;i<=10;i++){x.push(i);y.push(a*i+b);}
 
-    fetch("/lineal", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({a: a, b: b})
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("resLineal").innerText = data.resultado;
+resL.innerText="Raíz: "+(-b/a).toFixed(2);
 
-        if (grafica1) grafica1.destroy();
-
-        let ctx = document.getElementById("graficaLineal").getContext("2d");
-        grafica1 = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: data.x,
-                datasets: [{
-                    label: "y = ax + b",
-                    data: data.y,
-                    borderWidth: 2
-                }]
-            }
-        });
-    })
-    .catch(() => alert("Error en servidor"));
+if(g1)g1.destroy();
+g1=new Chart(gL,{type:"line",data:{labels:x,datasets:[{data:y}]}})
 }
 
-function resolverCuadratica() {
-    let a = parseFloat(document.getElementById("a2").value);
-    let b = parseFloat(document.getElementById("b2").value);
-    let c = parseFloat(document.getElementById("c2").value);
+// LINEAL DOS PUNTOS
+function linealPuntos(){
+let X1=parseFloat(x1.value),Y1=parseFloat(y1.value);
+let X2=parseFloat(x2.value),Y2=parseFloat(y2.value);
 
-    if (isNaN(a) || isNaN(b) || isNaN(c)) {
-        alert("Ingresa valores válidos");
-        return;
-    }
+let m=(Y2-Y1)/(X2-X1);
+let b=Y1-m*X1;
 
-    fetch("/cuadratica", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({a: a, b: b, c: c})
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("resCuad").innerText = data.resultado;
+a.value=m;b.value=b;
 
-        if (grafica2) grafica2.destroy();
+linealAB();
+}
 
-        let ctx = document.getElementById("graficaCuad").getContext("2d");
-        grafica2 = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: data.x,
-                datasets: [{
-                    label: "y = ax² + bx + c",
-                    data: data.y,
-                    borderWidth: 2
-                }]
-            }
-        });
-    })
-    .catch(() => alert("Error en servidor"));
+// CUADRATICA ABC
+function cuadABC(){
+let a=parseFloat(a2.value),b=parseFloat(b2.value),c=parseFloat(c2.value);
+
+let d=b*b-4*a*c;
+let txt="";
+
+if(d>=0){
+let x1=(-b+Math.sqrt(d))/(2*a);
+let x2=(-b-Math.sqrt(d))/(2*a);
+txt=`x1=${x1.toFixed(2)} x2=${x2.toFixed(2)}`;
+}else txt="Sin reales";
+
+let xv=-b/(2*a);
+let yv=a*xv*xv+b*xv+c;
+
+resC.innerText=txt+" | V("+xv.toFixed(2)+","+yv.toFixed(2)+")";
+
+let x=[],y=[];
+for(let i=-10;i<=10;i++){x.push(i);y.push(a*i*i+b*i+c);}
+
+if(g2)g2.destroy();
+g2=new Chart(gC,{type:"line",data:{labels:x,datasets:[{data:y}]}})
+}
+
+// CUADRATICA FACTORIZADA
+function cuadFact(){
+let r_1=parseFloat(r1.value),r_2=parseFloat(r2.value);
+
+let a=1;
+let b=-(r_1+r_2);
+let c=r_1*r_2;
+
+a2.value=a;b2.value=b;c2.value=c;
+
+cuadABC();
+}
+
+// SISTEMA 2x2 (TODOS LOS METODOS)
+function resolverSistema(){
+let a=parseFloat(a1.value),b=parseFloat(b1.value),c=parseFloat(c1.value);
+let d=parseFloat(a22.value),e=parseFloat(b22.value),f=parseFloat(c22.value);
+
+// CRAMER
+let det=a*e-b*d;
+let x=(c*e-b*f)/det;
+let y=(a*f-c*d)/det;
+
+// IGUALACION
+let y_eq=(c-a*x)/b;
+
+// SUSTITUCION
+let x_sub=(c-b*y)/a;
+
+resS.innerText=
+`Cramer: x=${x.toFixed(2)}, y=${y.toFixed(2)}
+Igualación y=${y_eq.toFixed(2)}
+Sustitución x=${x_sub.toFixed(2)}`;
+
+// GRAFICA
+let X=[],Y1=[],Y2=[];
+for(let i=-10;i<=10;i++){
+X.push(i);
+Y1.push((c-a*i)/b);
+Y2.push((f-d*i)/e);
+}
+
+if(g3)g3.destroy();
+g3=new Chart(gS,{
+type:"line",
+data:{
+labels:X,
+datasets:[
+{label:"Eq1",data:Y1},
+{label:"Eq2",data:Y2}
+]
+}
+});
 }
 </script>
 
+</body>
+</html>
 </body>
 </html>
