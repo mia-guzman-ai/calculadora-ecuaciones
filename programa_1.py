@@ -1,7 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 import math
 import os
 
+@app.route("/")
+def home():
+    return send_file("index.html")
+    
 app = Flask(__name__)
 
 # ======================
@@ -97,4 +101,4 @@ def sistema():
 # ======================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+   app.run(host="0.0.0.0", port=port)
