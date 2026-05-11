@@ -1,46 +1,85 @@
-from flask import Flask, request, jsonify, send_file
-import math
+from flask import Flask, request, jsonify
+import numpy as np
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return send_file("index.html")
-
+# LINEAL
 @app.route("/lineal", methods=["POST"])
 def lineal():
     data = request.json
     a = data["a"]
     b = data["b"]
 
-    x_vals = list(range(-10, 11))
-    y_vals = [a*x + b for x in x_vals]
+    x = list(range(-10, 11))
+    y = [a*i + b for i in x]
+
+    resultado = -b/a if a != 0 else "Sin solución"
 
     return jsonify({
-        "x": x_vals,
-        "y": y_vals,
-        "resultado": f"x = {-b/a:.2f}"
+        "resultado": resultado,
+        "x": x,
+        "y": y
     })
 
+
+# CUADRATICA
 @app.route("/cuadratica", methods=["POST"])
 def cuadratica():
     data = request.json
-    a, b, c = data["a"], data["b"], data["c"]
+    a = data["a"]
+    b = data["b"]
+    c = data["c"]
 
-    x_vals = list(range(-10, 11))
-    y_vals = [a*x**2 + b*x + c for x in x_vals]
+    d = b*b - 4*a*c
 
-    d = b**2 - 4*a*c
-    if d > 0:
-        r = f"Raices: {(-b+math.sqrt(d))/(2*a):.2f}, {(-b-math.sqrt(d))/(2*a):.2f}"
-    elif d == 0:
-        r = f"Raiz: {-b/(2*a):.2f}"
+    if d >= 0:
+        x1 = (-b + d**0.5)/(2*a)
+        x2 = (-b - d**0.5)/(2*a)
+        resultado = f"x1={x1:.2f}, x2={x2:.2f}"
     else:
-        r = "No reales"
+        resultado = "Sin soluciones reales"
 
-    return jsonify({"x": x_vals, "y": y_vals, "resultado": r})
+    x = list(range(-10, 11))
+    y = [a*i*i + b*i + c for i in x]
+
+    return jsonify({
+        "resultado": resultado,
+        "x": x,
+        "y": y
+    })
+
+
+# SISTEMA 2x2
+@app.route("/sistema", methods=["POST"])
+def sistema():
+    data = request.json
+
+    a = data["a1"]
+    b = data["b1"]
+    c = data["c1"]
+    d = data["a2"]
+    e = data["b2"]
+    f = data["c2"]
+
+    det = a*e - b*d
+
+    if det == 0:
+        return jsonify({"resultado": "Sin solución única"})
+
+    x = (c*e - b*f)/det
+    y = (a*f - c*d)/det
+
+    X = list(range(-10, 11))
+    Y1 = [(c - a*i)/b for i in X]
+    Y2 = [(f - d*i)/e for i in X]
+
+    return jsonify({
+        "resultado": f"x={x:.2f}, y={y:.2f}",
+        "x_vals": X,
+        "y1": Y1,
+        "y2": Y2
+    })
+
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
