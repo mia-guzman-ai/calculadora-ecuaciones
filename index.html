@@ -1,55 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Calculadora Matemática</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #1e1e2f;
-            color: white;
-            text-align: center;
-        }
-        .card {
-            background: #2e2e3f;
-            padding: 20px;
-            margin: 20px auto;
-            width: 300px;
-            border-radius: 10px;
-        }
-        input, button {
-            margin: 5px;
-            padding: 10px;
-        }
-        button {
-            background: #00bcd4;
-            border: none;
-            color: white;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-<h1>Calculadora Matemática</h1>
-
-<div class="card">
-    <h2>Ecuación Lineal</h2>
-    <input id="a" placeholder="a">
-    <input id="b" placeholder="b">
-    <button onclick="resolverLineal()">Resolver</button>
-    <p id="resLineal"></p>
-</div>
-
-<div class="card">
-    <h2>Cuadrática</h2>
-    <input id="a2" placeholder="a">
-    <input id="b2" placeholder="b">
-    <input id="c2" placeholder="c">
-    <button onclick="resolverCuadratica()">Resolver</button>
-    <p id="resCuad"></p>
-</div>
-
 <script>
+let grafica1 = null;
+let grafica2 = null;
+
 function resolverLineal() {
     let a = parseFloat(document.getElementById("a").value);
     let b = parseFloat(document.getElementById("b").value);
@@ -67,9 +19,21 @@ function resolverLineal() {
     .then(res => res.json())
     .then(data => {
         document.getElementById("resLineal").innerText = data.resultado;
-    })
-    .catch(() => {
-        alert("Error al conectar con el servidor");
+
+        if (grafica1) grafica1.destroy();
+
+        let ctx = document.getElementById("graficaLineal").getContext("2d");
+        grafica1 = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: data.x,
+                datasets: [{
+                    label: "y = ax + b",
+                    data: data.y,
+                    borderWidth: 2
+                }]
+            }
+        });
     });
 }
 
@@ -91,12 +55,23 @@ function resolverCuadratica() {
     .then(res => res.json())
     .then(data => {
         document.getElementById("resCuad").innerText = data.resultado;
-    })
-    .catch(() => {
-        alert("Error al conectar con el servidor");
+
+        if (grafica2) grafica2.destroy();
+
+        let ctx = document.getElementById("graficaCuad").getContext("2d");
+        grafica2 = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: data.x,
+                datasets: [{
+                    label: "y = ax² + bx + c",
+                    data: data.y,
+                    borderWidth: 2
+                }]
+            }
+        });
     });
 }
 </script>
-
 </body>
 </html>
