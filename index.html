@@ -51,33 +51,49 @@
 
 <script>
 function resolverLineal() {
-    fetch("http://127.0.0.1:5000/lineal", {
+    let a = parseFloat(document.getElementById("a").value);
+    let b = parseFloat(document.getElementById("b").value);
+
+    if (isNaN(a) || isNaN(b)) {
+        alert("Ingresa valores válidos");
+        return;
+    }
+
+    fetch("/lineal", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            a: parseFloat(document.getElementById("a").value),
-            b: parseFloat(document.getElementById("b").value)
-        })
+        body: JSON.stringify({a: a, b: b})
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById("resLineal").innerText = "x = " + data.resultado;
+        document.getElementById("resLineal").innerText = data.resultado;
+    })
+    .catch(() => {
+        alert("Error al conectar con el servidor");
     });
 }
 
 function resolverCuadratica() {
-    fetch("http://127.0.0.1:5000/cuadratica", {
+    let a = parseFloat(document.getElementById("a2").value);
+    let b = parseFloat(document.getElementById("b2").value);
+    let c = parseFloat(document.getElementById("c2").value);
+
+    if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        alert("Ingresa valores válidos");
+        return;
+    }
+
+    fetch("/cuadratica", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            a: parseFloat(document.getElementById("a2").value),
-            b: parseFloat(document.getElementById("b2").value),
-            c: parseFloat(document.getElementById("c2").value)
-        })
+        body: JSON.stringify({a: a, b: b, c: c})
     })
     .then(res => res.json())
     .then(data => {
         document.getElementById("resCuad").innerText = data.resultado;
+    })
+    .catch(() => {
+        alert("Error al conectar con el servidor");
     });
 }
 </script>
