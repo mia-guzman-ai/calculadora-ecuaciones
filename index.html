@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora Matemática</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #1e1e2f;
+            color: white;
+            text-align: center;
+        }
+        .card {
+            background: #2e2e3f;
+            padding: 20px;
+            margin: 20px auto;
+            width: 300px;
+            border-radius: 10px;
+        }
+        input, button {
+            margin: 5px;
+            padding: 10px;
+        }
+        button {
+            background: #00bcd4;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Calculadora Matemática</h1>
+
+<div class="card">
+    <h2>Ecuación Lineal</h2>
+    <input id="a" placeholder="a">
+    <input id="b" placeholder="b">
+    <button onclick="resolverLineal()">Resolver</button>
+    <p id="resLineal"></p>
+</div>
+
+<div class="card">
+    <h2>Cuadrática</h2>
+    <input id="a2" placeholder="a">
+    <input id="b2" placeholder="b">
+    <input id="c2" placeholder="c">
+    <button onclick="resolverCuadratica()">Resolver</button>
+    <p id="resCuad"></p>
+</div>
+
+<script>
+function resolverLineal() {
+    fetch("http://127.0.0.1:5000/lineal", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            a: parseFloat(document.getElementById("a").value),
+            b: parseFloat(document.getElementById("b").value)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("resLineal").innerText = "x = " + data.resultado;
+    });
+}
+
+function resolverCuadratica() {
+    fetch("http://127.0.0.1:5000/cuadratica", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            a: parseFloat(document.getElementById("a2").value),
+            b: parseFloat(document.getElementById("b2").value),
+            c: parseFloat(document.getElementById("c2").value)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("resCuad").innerText = data.resultado;
+    });
+}
+</script>
+
+</body>
+</html>
