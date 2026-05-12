@@ -1,12 +1,10 @@
-from flask import Flask, request, jsonify, send_file
-import math
-import os
+from flask import Flask, send_from_directory
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return send_file("index.html")
+    return send_from_directory(".", "index.html")
 
 
 # ======================
