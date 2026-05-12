@@ -2,285 +2,314 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calculadora Matemática Pro Max</title>
+<title>Calculadora Matemática</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body {
+body{
     margin:0;
-    font-family: 'Segoe UI';
-    display:flex;
-    transition:0.3s;
+    font-family:'Segoe UI';
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
 }
 
-/* DARK MODE */
-.dark {
-    background:#121212;
-    color:white;
-}
-
-/* MENU */
-.menu {
-    width:230px;
-    background:#111;
-    color:white;
+/* BIENVENIDA */
+#inicio{
     height:100vh;
-    padding:20px;
-    transition:0.3s;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    text-align:center;
 }
 
-.menu button {
-    width:100%;
-    margin:10px 0;
-    padding:12px;
-    background:#333;
-    color:white;
+#inicio button{
+    padding:15px 30px;
+    font-size:18px;
     border:none;
-    border-radius:8px;
+    border-radius:10px;
+    background:white;
+    color:#333;
     cursor:pointer;
 }
 
-/* CONTENT */
-.content {
-    flex:1;
-    padding:20px;
-    background:#f4f4f4;
-    transition:0.3s;
+/* MENU */
+.menu{
+    position:fixed;
+    top:10px;
+    right:10px;
 }
 
-.dark .content {
-    background:#1e1e1e;
+.menu button{
+    font-size:20px;
+    padding:10px;
 }
 
-/* CARD */
-.card {
+.dropdown{
+    display:none;
+    position:absolute;
+    right:0;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.dropdown button{
+    display:block;
+    width:200px;
+    border:none;
+    padding:10px;
+    background:white;
+    cursor:pointer;
+}
+
+.dropdown button:hover{
+    background:#eee;
+}
+
+/* CONTENIDO */
+.content{
+    padding:40px;
+    display:none;
+}
+
+.card{
+    max-width:600px;
+    margin:auto;
     background:white;
     padding:20px;
     border-radius:15px;
-    max-width:650px;
-    margin:auto;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-    animation:fade 0.4s;
+    text-align:center;
 }
 
-.dark .card {
-    background:#2a2a2a;
-}
-
-@keyframes fade {
-    from {opacity:0; transform:translateY(20px);}
-    to {opacity:1;}
-}
-
-input {
-    width:95%;
+input,select{
+    width:90%;
     padding:10px;
-    margin:6px 0;
-    border-radius:6px;
-    border:1px solid #ccc;
+    margin:8px 0;
 }
 
-button.action {
-    background:#4facfe;
-    color:white;
+canvas{
+    margin-top:15px;
 }
-
-button:hover {
-    opacity:0.9;
-}
-
-.section{display:none;}
-.active{display:block;}
 </style>
 </head>
 
 <body>
 
-<div class="menu">
-<h2>📊 Menú</h2>
+<!-- BIENVENIDA -->
+<div id="inicio">
+<h1>📊 Calculadora Matemática</h1>
+<p>
+Aquí podrás resolver:
+<br>• Ecuaciones lineales (rectas)
+<br>• Cuadráticas (parábolas)
+<br>• Sistemas 2x2 y 3x3
+</p>
 
+<button onclick="entrar()">Comenzar</button>
+</div>
+
+<!-- MENU -->
+<div class="menu">
+<button onclick="toggleMenu()">☰</button>
+<div id="drop" class="dropdown">
 <button onclick="mostrar('lineal')">Lineal</button>
 <button onclick="mostrar('cuadratica')">Cuadrática</button>
-<button onclick="mostrar('sistema')">Sistema 2x2</button>
-<button onclick="mostrar('sistema3')">Sistema 3x3</button>
-
-<hr>
-<button onclick="toggleDark()">🌙 Modo oscuro</button>
+<button onclick="mostrar('sistema')">2x2</button>
+<button onclick="mostrar('sistema3')">3x3</button>
+</div>
 </div>
 
-<div class="content">
+<!-- CONTENIDO -->
+<div id="app" class="content">
 
-<!-- LINEAL -->
-<div id="lineal" class="section active">
 <div class="card">
-<h2>Ecuación Lineal</h2>
-<p>
-Una ecuación lineal describe una relación directa entre dos variables.
-La pendiente indica la inclinación y b el punto donde la recta corta el eje Y.
-</p>
 
-<input id="m" placeholder="Pendiente (m)">
-<input id="b" placeholder="Intersección (b)">
+<h2 id="titulo"></h2>
+<p id="desc"></p>
 
-<button class="action" onclick="calcLineal()">Calcular</button>
+<select id="modo" onchange="cambiarInputs()"></select>
+
+<div id="inputs"></div>
+
+<button onclick="calcular()">Calcular</button>
 <button onclick="limpiar()">Limpiar</button>
 
-<div id="graficaLineal"></div>
+<div id="resultado"></div>
+<canvas id="grafica"></canvas>
+
+<button onclick="exportPDF()">Exportar PDF</button>
+
 </div>
-</div>
-
-<!-- CUADRATICA -->
-<div id="cuadratica" class="section">
-<div class="card">
-<h2>Ecuación Cuadrática</h2>
-<p>
-Representa una parábola. Dependiendo del discriminante,
-puede tener soluciones reales o complejas.
-</p>
-
-<input id="a">
-<input id="b2">
-<input id="c">
-
-<button class="action" onclick="calcCuadratica()">Calcular</button>
-<button onclick="limpiar()">Limpiar</button>
-
-<div id="graficaCuad"></div>
-</div>
-</div>
-
-<!-- SISTEMA -->
-<div id="sistema" class="section">
-<div class="card">
-<h2>Sistema 2x2</h2>
-<p>
-La solución es el punto donde ambas rectas se intersectan.
-</p>
-
-<input id="a1"><input id="b1"><input id="c1">
-<input id="a2"><input id="b2s"><input id="c2">
-
-<button class="action" onclick="calc2()">Calcular</button>
-<button onclick="limpiar()">Limpiar</button>
-
-<div id="res2"></div>
-</div>
-</div>
-
-<!-- SISTEMA 3x3 -->
-<div id="sistema3" class="section">
-<div class="card">
-<h2>Sistema 3x3</h2>
-<p>
-Se resuelve con eliminación de Gauss.
-</p>
-
-<input id="a1_3"><input id="b1_3"><input id="c1_3"><input id="d1_3">
-<input id="a2_3"><input id="b2_3"><input id="c2_3"><input id="d2_3">
-<input id="a3_3"><input id="b3_3"><input id="c3_3"><input id="d3_3">
-
-<button class="action" onclick="calc3()">Calcular</button>
-<button onclick="limpiar()">Limpiar</button>
-
-<div id="res3"></div>
-</div>
-</div>
-
 </div>
 
 <script>
 
-// DARK MODE
-function toggleDark(){
-    document.body.classList.toggle("dark");
+let tipoActual="";
+let chart;
+
+// ENTRAR
+function entrar(){
+    inicio.style.display="none";
+    app.style.display="block";
 }
 
-// NAV
-function mostrar(id){
-    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+// MENU
+function toggleMenu(){
+    drop.style.display = drop.style.display=="block" ? "none":"block";
 }
 
-// LIMPIAR
-function limpiar(){
-    document.querySelectorAll('input').forEach(i=>i.value="");
-    document.querySelectorAll('[id^="grafica"], #res2, #res3').forEach(e=>e.innerHTML="");
+// MOSTRAR SECCIÓN
+function mostrar(tipo){
+    tipoActual = tipo;
+    drop.style.display="none";
+
+    if(tipo=="lineal"){
+        titulo.innerText="Ecuación Lineal";
+        desc.innerText="Representa una recta. Puedes definirla de varias formas.";
+        modo.innerHTML=`
+        <option value="mb">Pendiente e intersección</option>
+        `;
+    }
+
+    if(tipo=="cuadratica"){
+        titulo.innerText="Ecuación Cuadrática";
+        desc.innerText="Representa una parábola.";
+        modo.innerHTML=`<option value="abc">Forma general</option>`;
+    }
+
+    if(tipo=="sistema"){
+        titulo.innerText="Sistema 2x2";
+        desc.innerText="Intersección de dos rectas.";
+        modo.innerHTML=`<option>General</option>`;
+    }
+
+    if(tipo=="sistema3"){
+        titulo.innerText="Sistema 3x3";
+        desc.innerText="Intersección de tres planos.";
+        modo.innerHTML=`<option>General</option>`;
+    }
+
+    cambiarInputs();
 }
 
-// PDF
-function exportPDF(texto){
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text(texto, 10, 10);
-    doc.save("resultado.pdf");
+// INPUTS DINÁMICOS
+function cambiarInputs(){
+    if(tipoActual=="lineal"){
+        inputs.innerHTML=`
+        <input id="m" placeholder="Pendiente m">
+        <input id="b" placeholder="Intersección b">
+        `;
+    }
+
+    if(tipoActual=="cuadratica"){
+        inputs.innerHTML=`
+        <input id="a">
+        <input id="b2">
+        <input id="c">
+        `;
+    }
+
+    if(tipoActual=="sistema"){
+        inputs.innerHTML=`
+        <input id="a1"><input id="b1"><input id="c1">
+        <input id="a2"><input id="b2s"><input id="c2">
+        `;
+    }
+
+    if(tipoActual=="sistema3"){
+        inputs.innerHTML=`
+        <input id="a1_3"><input id="b1_3"><input id="c1_3"><input id="d1_3">
+        <input id="a2_3"><input id="b2_3"><input id="c2_3"><input id="d2_3">
+        <input id="a3_3"><input id="b3_3"><input id="c3_3"><input id="d3_3">
+        `;
+    }
 }
 
-// LINEAL
-function calcLineal(){
+// CALCULAR
+function calcular(){
+
+if(tipoActual=="lineal"){
 fetch("/lineal",{method:"POST",headers:{"Content-Type":"application/json"},
 body:JSON.stringify({m:+m.value,b:+b.value})})
-.then(r=>r.json())
-.then(d=>{
-graficaLineal.innerHTML=`
-<p>${d.resultado}</p>
-<button onclick="exportPDF('${d.resultado}')">Exportar PDF</button>
-<canvas id="c1" width="400" height="250"></canvas>`;
-new Chart(c1,{type:'line',data:{labels:d.x,datasets:[{data:d.y}]}})
+.then(r=>r.json()).then(d=>{
+mostrarResultado(d,d.x,d.y);
 });
 }
 
-// CUADRATICA
-function calcCuadratica(){
+if(tipoActual=="cuadratica"){
 fetch("/cuadratica",{method:"POST",headers:{"Content-Type":"application/json"},
 body:JSON.stringify({a:+a.value,b:+b2.value,c:+c.value})})
-.then(r=>r.json())
-.then(d=>{
-graficaCuad.innerHTML=`
-<p>${d.resultado}</p>
-<button onclick="exportPDF('${d.resultado}')">Exportar PDF</button>
-<canvas id="c2"></canvas>`;
-new Chart(c2,{type:'line',data:{labels:d.x,datasets:[{data:d.y}]}})
+.then(r=>r.json()).then(d=>{
+mostrarResultado(d,d.x,d.y);
 });
 }
 
-// SISTEMA 2x2
-function calc2(){
+if(tipoActual=="sistema"){
 fetch("/sistema",{method:"POST",headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 a:+a1.value,b:+b1.value,c:+c1.value,
 d:+a2.value,e:+b2s.value,f:+c2.value
 })})
-.then(r=>r.json())
-.then(d=>{
-res2.innerHTML=`
-<p>${d.resultado}</p>
-<button onclick="exportPDF('${d.resultado}')">Exportar PDF</button>
-<canvas id="c3"></canvas>`;
-new Chart(c3,{type:'line',data:{labels:d.x,datasets:[{data:d.y1},{data:d.y2}]}})
+.then(r=>r.json()).then(d=>{
+mostrarResultado(d,d.x,d.y1,d.y2);
 });
 }
 
-// SISTEMA 3x3
-function calc3(){
+if(tipoActual=="sistema3"){
 fetch("/sistema3",{method:"POST",headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 a1:+a1_3.value,b1:+b1_3.value,c1:+c1_3.value,d1:+d1_3.value,
 a2:+a2_3.value,b2:+b2_3.value,c2:+c2_3.value,d2:+d2_3.value,
 a3:+a3_3.value,b3:+b3_3.value,c3:+c3_3.value,d3:+d3_3.value
 })})
-.then(r=>r.json())
-.then(d=>{
-res3.innerHTML=`
-<p>${d.resultado}</p>
-<button onclick="exportPDF('${d.resultado}')">Exportar PDF</button>`;
+.then(r=>r.json()).then(d=>{
+resultado.innerHTML=d.resultado;
 });
+}
+
+}
+
+// MOSTRAR RESULTADO
+function mostrarResultado(d,x,y,y2){
+resultado.innerHTML=d.resultado;
+
+if(chart) chart.destroy();
+
+chart=new Chart(grafica,{
+type:'line',
+data:{
+labels:x,
+datasets: y2 ?
+[{data:y},{data:y2}]
+:[{data:y}]
+}
+});
+}
+
+// PDF CON GRÁFICA
+function exportPDF(){
+const { jsPDF } = window.jspdf;
+let doc = new jsPDF();
+
+doc.text(resultado.innerText,10,10);
+
+let img = grafica.toDataURL("image/png");
+doc.addImage(img,"PNG",10,20,180,100);
+
+doc.save("resultado.pdf");
+}
+
+// LIMPIAR
+function limpiar(){
+inputs.innerHTML="";
+resultado.innerHTML="";
+if(chart) chart.destroy();
 }
 
 </script>
 
-</body>
-</html>
 </body>
 </html>
