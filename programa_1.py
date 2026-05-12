@@ -1,296 +1,110 @@
-from flask import Flask, request, jsonify, send_from_directory 
+from flask import Flask, request, jsonify, send_from_directory
+import math
 
-  
+app = Flask(__name__)
 
-app = Flask(__name__) 
+@app.route("/")
+def home():
+    return send_from_directory(".", "index.html")
 
-  
 
-@app.route("/") 
+# ======================
+# LINEAL
+# ======================
+@app.route("/lineal", methods=["POST"])
+def lineal():
+    data = request.json
+    tipo = data["tipo"]
 
-def home(): 
+    x_vals = list(range(-10, 11))
 
-    return send_from_directory(".", "index.html") 
+    try:
+        if tipo == "punto_pendiente":
+            m = data["m"]
+            x1 = data["x1"]
+            y1 = data["y1"]
 
-  
+            b = y1 - m*x1
+            y_vals = [m*x + b for x in x_vals]
+            resultado = f"y = {m:.2f}x + {b:.2f}"
 
-  
+        else:
+            return jsonify({"resultado": "Tipo inválido"})
 
-# ====================== 
+        return jsonify({"x": x_vals, "y": y_vals, "resultado": resultado})
 
-# LINEAL (3 FORMAS) 
+    except:
+        return jsonify({"resultado": "Error en datos"})
 
-# ====================== 
 
-@app.route("/lineal", methods=["POST"]) 
+# ======================
+# CUADRATICA
+# ======================
+@app.route("/cuadratica", methods=["POST"])
+def cuadratica():
+    data = request.json
 
-def lineal(): 
+    x_vals = list(range(-10, 11))
 
-    data = request.json 
+    try:
+        a = data["a"]
+        b = data["b"]
+        c = data["c"]
 
-    tipo = data["tipo"] 
+        if a == 0:
+            return jsonify({"resultado": "No es cuadrática"})
 
-  
+        y_vals = [a*x**2 + b*x + c for x in x_vals]
 
-    x_vals = list(range(-10, 11)) 
+        d = b**2 - 4*a*c
 
-  
+        if d > 0:
+            r1 = (-b + math.sqrt(d))/(2*a)
+            r2 = (-b - math.sqrt(d))/(2*a)
+            res = f"Raíces: {r1:.2f}, {r2:.2f}"
+        elif d == 0:
+            r = -b/(2*a)
+            res = f"Raíz: {r:.2f}"
+        else:
+            res = "No reales"
 
-    try: 
+        return jsonify({"x": x_vals, "y": y_vals, "resultado": res})
 
-        # ax + b = 0 
+    except:
+        return jsonify({"resultado": "Error en datos"})
 
-        if tipo == "general": 
 
-            a = data["a"] 
+# ======================
+# SISTEMA 2x2
+# ======================
+@app.route("/sistema", methods=["POST"])
+def sistema():
+    data = request.json
 
-            b = data["b"] 
+    a,b,c = data["a"], data["b"], data["c"]
+    d,e,f = data["d"], data["e"], data["f"]
 
-  
+    det = a*e - b*d
 
-            if a == 0: 
+    if det == 0:
+        return jsonify({"resultado": "Sin solución"})
 
-                return jsonify({"resultado": "No válida"}) 
+    x = (c*e - b*f)/det
+    y = (a*f - c*d)/det
 
-  
+    x_vals = list(range(-10,11))
+    y1 = [(-a*x + c)/b for x in x_vals]
+    y2 = [(-d*x + f)/e for x in x_vals]
 
-            y_vals = [a*x + b for x in x_vals] 
-
-            resultado = f"x = {-b/a:.2f}" 
-
-  
-
-        # dos puntos 
-
-        elif tipo == "dos_puntos": 
-
-            x1, y1 = data["x1"], data["y1"] 
-
-            x2, y2 = data["x2"], data["y2"] 
-
-  
-
-            if x1 == x2: 
-
-                return jsonify({"resultado": "Recta vertical"}) 
-
-  
-
-            m = (y2 - y1)/(x2 - x1) 
-
-            b = y1 - m*x1 
-
-  
-
-            y_vals = [m*x + b for x in x_vals] 
-
-            resultado = f"y = {m:.2f}x + {b:.2f}" 
-
-  
-
-        # punto pendiente 
-
-        elif tipo == "punto_pendiente": 
-
-            m = data["m"] 
-
-            x1 = data["x1"] 
-
-            y1 = data["y1"] 
-
-  
-
-            b = y1 - m*x1 
-
-            y_vals = [m*x + b for x in x_vals] 
-
-            resultado = f"y = {m:.2f}x + {b:.2f}" 
-
-  
-
-        else: 
-
-            return jsonify({"resultado": "Tipo inválido"}) 
-
-  
-
-        return jsonify({"x": x_vals, "y": y_vals, "resultado": resultado}) 
-
-  
-
-    except: 
-
-        return jsonify({"resultado": "Error en datos"}) 
-
-  
-
-  
-
-# ====================== 
-
-# CUADRATICA (2 FORMAS) 
-
-# ====================== 
-
-@app.route("/cuadratica", methods=["POST"]) 
-
-def cuadratica(): 
-
-    data = request.json 
-
-    tipo = data["tipo"] 
-
-  
-
-    x_vals = list(range(-10, 11)) 
-
-  
-
-    try: 
-
-        if tipo == "general": 
-
-            a, b, c = data["a"], data["b"], data["c"] 
-
-  
-
-        elif tipo == "tres_puntos": 
-
-            x1,y1 = data["x1"], data["y1"] 
-
-            x2,y2 = data["x2"], data["y2"] 
-
-            x3,y3 = data["x3"], data["y3"] 
-
-  
-
-            a = ((y3 - ((y2-y1)/(x2-x1)*(x3-x1)+y1)) / ((x3-x1)*(x3-x2))) 
-
-            b = (y2-y1)/(x2-x1) - a*(x1+x2) 
-
-            c = y1 - a*x1**2 - b*x1 
-
-  
-
-        else: 
-
-            return jsonify({"resultado": "Tipo inválido"}) 
-
-  
-
-        if a == 0: 
-
-            return jsonify({"resultado": "No es cuadrática"}) 
-
-  
-
-        y_vals = [a*x**2 + b*x + c for x in x_vals] 
-
-  
-
-        d = b**2 - 4*a*c 
-
-  
-
-        if d > 0: 
-
-            r1 = (-b + math.sqrt(d))/(2*a) 
-
-            r2 = (-b - math.sqrt(d))/(2*a) 
-
-            res = f"Raíces: {r1:.2f}, {r2:.2f}" 
-
-        elif d == 0: 
-
-            r = -b/(2*a) 
-
-            res = f"Raíz: {r:.2f}" 
-
-        else: 
-
-            res = "No reales" 
-
-  
-
-        return jsonify({"x": x_vals, "y": y_vals, "resultado": res}) 
-
-  
-
-    except: 
-
-        return jsonify({"resultado": "Error en datos"}) 
-
-  
-
-  
-
-# ====================== 
-
-# SISTEMA 
-
-# ====================== 
-
-@app.route("/sistema", methods=["POST"]) 
-
-def sistema(): 
-
-    data = request.json 
-
-  
-
-    a,b,c = data["a"], data["b"], data["c"] 
-
-    d,e,f = data["d"], data["e"], data["f"] 
-
-  
-
-    det = a*e - b*d 
-
-  
-
-    if det == 0: 
-
-        return jsonify({"resultado": "Sin solución"}) 
-
-  
-
-    x = (c*e - b*f)/det 
-
-    y = (a*f - c*d)/det 
-
-  
-
-    # para graficar 
-
-    x_vals = list(range(-10,11)) 
-
-    y1 = [(-a*x + c)/b for x in x_vals] 
-
-    y2 = [(-d*x + f)/e for x in x_vals] 
-
-  
-
-    return jsonify({ 
-
-        "resultado": f"x={x:.2f}, y={y:.2f}", 
-
-        "x": x_vals, 
-
-        "y1": y1, 
-
-        "y2": y2 
-
-    }) 
-
-  
-
-  
-
-if __name__ == "__main__": 
-
-    import os 
-
-    port = int(os.environ.get("PORT", 8080)) 
-
-    app.run(host="0.0.0.0", port=port) 
+    return jsonify({
+        "resultado": f"x={x:.2f}, y={y:.2f}",
+        "x": x_vals,
+        "y1": y1,
+        "y2": y2
+    })
+
+
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
