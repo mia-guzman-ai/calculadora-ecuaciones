@@ -2,155 +2,200 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Solver Pro</title>
-<link rel="stylesheet" href="/static/style.css">
+<title>Calculadora PRO</title>
 
-<script>
-function mostrar(id){
-    document.querySelectorAll(".panel").forEach(e=>e.style.display="none");
-    if(id !== ""){
-        document.getElementById(id).style.display="block";
-    }
+<style>
+body{
+    font-family: Arial;
+    margin:0;
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
+    color:white;
 }
 
-function abrirMenu(){
-    document.getElementById("menu").classList.toggle("activo");
+header{
+    padding:15px;
+    background:#111;
+    display:flex;
+    justify-content:space-between;
 }
-</script>
 
+.menu{
+    position:relative;
+}
+
+.menu button{
+    background:#00c6ff;
+    border:none;
+    padding:10px;
+    cursor:pointer;
+}
+
+.menu-content{
+    display:none;
+    position:absolute;
+    background:white;
+    color:black;
+}
+
+.menu-content a{
+    display:block;
+    padding:10px;
+    text-decoration:none;
+}
+
+.menu:hover .menu-content{
+    display:block;
+}
+
+.container{
+    text-align:center;
+    padding:30px;
+}
+
+.card{
+    background:white;
+    color:black;
+    padding:20px;
+    margin:20px auto;
+    width:300px;
+    border-radius:15px;
+}
+
+input{
+    margin:5px;
+    padding:8px;
+    width:80%;
+}
+
+button{
+    margin:5px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.grafica{
+    margin-top:20px;
+}
+
+</style>
 </head>
 
 <body>
 
-<!-- BIENVENIDA -->
-<div class="bienvenida">
-    <h1>🔥 Solver Matemático Pro</h1>
-    <p>Resuelve ecuaciones de forma visual y sencilla</p>
-    <button onclick="abrirMenu()">☰ Menú</button>
+<header>
+<h2>Calculadora Matemática</h2>
+<div class="menu">
+<button>☰ Ecuaciones</button>
+<div class="menu-content">
+<a href="#lineal">Lineal</a>
+<a href="#cuadratica">Cuadrática</a>
+<a href="#sistema2">Sistema 2x2</a>
+<a href="#sistema3">Sistema 3x3</a>
 </div>
+</div>
+<p>Mía Guzmán Mosqueda</p>
+</header>
 
-<!-- MENÚ DESPLEGABLE -->
-<div id="menu" class="menu">
-    <button onclick="mostrar('lineal')">Lineal</button>
-    <button onclick="mostrar('cuadratica')">Cuadrática</button>
-    <button onclick="mostrar('sistema2')">2x2</button>
-    <button onclick="mostrar('sistema3')">3x3</button>
-</div>
+<div class="container">
+
+<h1>Bienvenido</h1>
+<p>Aquí puedes resolver ecuaciones lineales, cuadráticas y sistemas.</p>
 
 <!-- LINEAL -->
-<div id="lineal" class="panel">
-<h2>Ecuación Lineal</h2>
-<p>Forma: y = mx + b</p>
+<div class="card" id="lineal">
+<h3>Ecuación Lineal</h3>
+<p>Representa una recta.</p>
 
-<form method="post">
-<input type="hidden" name="metodo" value="lineal">
+<form action="/lineal" method="post">
+<select name="tipo">
+<option value="pendiente">Pendiente y corte</option>
+<option value="dos_puntos">Dos puntos</option>
+</select>
 
-<label>Pendiente (m)</label>
-<input name="m" placeholder="Ej: 2" required>
+<input name="m" placeholder="Pendiente (m)">
+<input name="b" placeholder="Intercepto (b)">
 
-<label>Intersección (b)</label>
-<input name="b" placeholder="Ej: 3" required>
+<input name="x1" placeholder="x1">
+<input name="y1" placeholder="y1">
+<input name="x2" placeholder="x2">
+<input name="y2" placeholder="y2">
 
-<button>Resolver</button>
+<button type="submit">Calcular</button>
 <button type="reset">Limpiar</button>
 </form>
-
-<button onclick="mostrar('')">⬅ Regresar</button>
 </div>
 
 <!-- CUADRATICA -->
-<div id="cuadratica" class="panel">
-<h2>Ecuación Cuadrática</h2>
-<p>Forma: ax² + bx + c</p>
+<div class="card" id="cuadratica">
+<h3>Ecuación Cuadrática</h3>
+<p>Parábola con forma ax²+bx+c.</p>
 
-<form method="post">
-<input type="hidden" name="metodo" value="cuadratica">
+<form action="/cuadratica" method="post">
+<input name="a" placeholder="a">
+<input name="b" placeholder="b">
+<input name="c" placeholder="c">
 
-<label>a</label>
-<input name="a" placeholder="Ej: 1" required>
-
-<label>b</label>
-<input name="b" placeholder="Ej: -3" required>
-
-<label>c</label>
-<input name="c" placeholder="Ej: 2" required>
-
-<button>Resolver</button>
+<button type="submit">Calcular</button>
 <button type="reset">Limpiar</button>
 </form>
-
-<button onclick="mostrar('')">⬅ Regresar</button>
 </div>
 
 <!-- SISTEMA 2x2 -->
-<div id="sistema2" class="panel">
-<h2>Sistema 2x2</h2>
-<p>Dos ecuaciones con dos incógnitas</p>
+<div class="card" id="sistema2">
+<h3>Sistema 2x2</h3>
 
-<form method="post">
-<input type="hidden" name="metodo" value="sistema2">
+<form action="/sistema2" method="post">
+<input name="a1" placeholder="a1">
+<input name="b1" placeholder="b1">
+<input name="c1" placeholder="c1">
 
-<p>Ecuación 1</p>
-<input name="a1" placeholder="coeficiente de x" required>
-<input name="b1" placeholder="coeficiente de y" required>
-<input name="c1" placeholder="resultado" required>
+<input name="a2" placeholder="a2">
+<input name="b2" placeholder="b2">
+<input name="c2" placeholder="c2">
 
-<p>Ecuación 2</p>
-<input name="a2" placeholder="coeficiente de x" required>
-<input name="b2" placeholder="coeficiente de y" required>
-<input name="c2" placeholder="resultado" required>
-
-<button>Resolver</button>
-<button type="reset">Limpiar</button>
+<button>Calcular</button>
 </form>
-
-<button onclick="mostrar('')">⬅ Regresar</button>
 </div>
 
 <!-- SISTEMA 3x3 -->
-<div id="sistema3" class="panel">
-<h2>Sistema 3x3</h2>
-<p>Tres ecuaciones con tres incógnitas</p>
+<div class="card" id="sistema3">
+<h3>Sistema 3x3</h3>
 
-<form method="post">
-<input type="hidden" name="metodo" value="sistema3">
+<form action="/sistema3" method="post">
 
-<p>Ecuación 1</p>
-<input name="a1" placeholder="x" required>
-<input name="b1" placeholder="y" required>
-<input name="c1" placeholder="z" required>
-<input name="d1" placeholder="resultado" required>
+<input name="a1" placeholder="a1">
+<input name="b1" placeholder="b1">
+<input name="c1" placeholder="c1">
+<input name="d1" placeholder="d1">
 
-<p>Ecuación 2</p>
-<input name="a2" placeholder="x" required>
-<input name="b2" placeholder="y" required>
-<input name="c2" placeholder="z" required>
-<input name="d2" placeholder="resultado" required>
+<input name="a2" placeholder="a2">
+<input name="b2" placeholder="b2">
+<input name="c2" placeholder="c2">
+<input name="d2" placeholder="d2">
 
-<p>Ecuación 3</p>
-<input name="a3" placeholder="x" required>
-<input name="b3" placeholder="y" required>
-<input name="c3" placeholder="z" required>
-<input name="d3" placeholder="resultado" required>
+<input name="a3" placeholder="a3">
+<input name="b3" placeholder="b3">
+<input name="c3" placeholder="c3">
+<input name="d3" placeholder="d3">
 
-<button>Resolver</button>
-<button type="reset">Limpiar</button>
+<button>Calcular</button>
 </form>
-
-<button onclick="mostrar('')">⬅ Regresar</button>
 </div>
 
 <!-- RESULTADO -->
 {% if resultado %}
-<div class="resultado">
-<h2>Resultado</h2>
-<p>{{resultado}}</p>
+<h2>Resultado: {{resultado}}</h2>
+{% endif %}
 
 {% if grafica %}
+<div class="grafica">
 <img src="data:image/png;base64,{{grafica}}">
-{% endif %}
 </div>
 {% endif %}
+
+</div>
 
 </body>
 </html>
