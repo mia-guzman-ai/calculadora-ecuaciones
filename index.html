@@ -1,140 +1,154 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculadora</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Calculadora</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<h2>Lineal (pendiente)</h2>
-<input id="a" placeholder="a">
-<input id="b" placeholder="b">
-<button onclick="lineal()">Resolver</button>
+<h2>ECUACIÓN LINEAL</h2>
+
+<select id="tipoLineal">
+<option value="general">ax + b</option>
+<option value="dos_puntos">Dos puntos</option>
+<option value="punto_pendiente">Punto pendiente</option>
+</select>
+
+<div id="inputsLineal"></div>
+<button onclick="resolverLineal()">Resolver</button>
 <p id="res1"></p>
 <canvas id="graf1"></canvas>
 
-<h2>Lineal (2 puntos)</h2>
-<input id="x1" placeholder="x1">
-<input id="y1" placeholder="y1">
-<input id="x2" placeholder="x2">
-<input id="y2" placeholder="y2">
-<button onclick="lineal2()">Resolver</button>
 
-<h2>Cuadrática</h2>
-<input id="ca" placeholder="a">
-<input id="cb" placeholder="b">
-<input id="cc" placeholder="c">
-<button onclick="cuadratica()">Resolver</button>
+<h2>CUADRÁTICA</h2>
+
+<select id="tipoCuad">
+<option value="general">ax² + bx + c</option>
+<option value="tres_puntos">Tres puntos</option>
+</select>
+
+<div id="inputsCuad"></div>
+<button onclick="resolverCuad()">Resolver</button>
 <p id="res2"></p>
 <canvas id="graf2"></canvas>
 
-<h2>Sistema 2x2</h2>
-<input id="sa" placeholder="a">
-<input id="sb" placeholder="b">
-<input id="sc" placeholder="c">
-<br>
-<input id="sd" placeholder="d">
-<input id="se" placeholder="e">
-<input id="sf" placeholder="f">
-<br>
-<button onclick="sistema()">Resolver</button>
+
+<h2>SISTEMA</h2>
+<input id="a"><input id="b"><input id="c"><br>
+<input id="d"><input id="e"><input id="f"><br>
+<button onclick="resolverSistema()">Resolver</button>
 <p id="res3"></p>
+<canvas id="graf3"></canvas>
+
 
 <script>
-let chart1, chart2;
+let chart1, chart2, chart3
 
-function lineal() {
-    fetch("/lineal", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            tipo:"pendiente",
-            a:parseFloat(a.value),
-            b:parseFloat(b.value)
-        })
-    })
+// ===== INPUTS DINAMICOS =====
+tipoLineal.onchange = () => {
+    if(tipoLineal.value=="general")
+        inputsLineal.innerHTML=`<input id="aL"><input id="bL">`
+    if(tipoLineal.value=="dos_puntos")
+        inputsLineal.innerHTML=`<input id="x1"><input id="y1"><input id="x2"><input id="y2">`
+    if(tipoLineal.value=="punto_pendiente")
+        inputsLineal.innerHTML=`<input id="m"><input id="x1"><input id="y1">`
+}
+tipoLineal.onchange()
+
+tipoCuad.onchange = () => {
+    if(tipoCuad.value=="general")
+        inputsCuad.innerHTML=`<input id="ca"><input id="cb"><input id="cc">`
+    if(tipoCuad.value=="tres_puntos")
+        inputsCuad.innerHTML=`<input id="x1"><input id="y1"><input id="x2"><input id="y2"><input id="x3"><input id="y3">`
+}
+tipoCuad.onchange()
+
+
+// ===== FUNCIONES =====
+function resolverLineal(){
+    let data={tipo:tipoLineal.value}
+
+    if(data.tipo=="general"){
+        data.a=parseFloat(aL.value)
+        data.b=parseFloat(bL.value)
+    }
+    if(data.tipo=="dos_puntos"){
+        data.x1=parseFloat(x1.value)
+        data.y1=parseFloat(y1.value)
+        data.x2=parseFloat(x2.value)
+        data.y2=parseFloat(y2.value)
+    }
+    if(data.tipo=="punto_pendiente"){
+        data.m=parseFloat(m.value)
+        data.x1=parseFloat(x1.value)
+        data.y1=parseFloat(y1.value)
+    }
+
+    fetch("/lineal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
     .then(r=>r.json())
-    .then(data=>{
-        res1.innerText = data.resultado
-        graficar(data.x, data.y, "graf1", chart1, (c)=>chart1=c)
+    .then(d=>{
+        res1.innerText=d.resultado
+        graficar(d.x,d.y,"graf1",(c)=>chart1=c,chart1)
     })
 }
 
-function lineal2() {
-    fetch("/lineal", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-            tipo:"dos_puntos",
-            x1:parseFloat(x1.value),
-            y1:parseFloat(y1.value),
-            x2:parseFloat(x2.value),
-            y2:parseFloat(y2.value)
-        })
-    })
+function resolverCuad(){
+    let data={tipo:tipoCuad.value}
+
+    if(data.tipo=="general"){
+        data.a=parseFloat(ca.value)
+        data.b=parseFloat(cb.value)
+        data.c=parseFloat(cc.value)
+    }
+
+    fetch("/cuadratica",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
     .then(r=>r.json())
-    .then(data=>{
-        res1.innerText = data.resultado
-        graficar(data.x, data.y, "graf1", chart1, (c)=>chart1=c)
+    .then(d=>{
+        res2.innerText=d.resultado
+        graficar(d.x,d.y,"graf2",(c)=>chart2=c,chart2)
     })
 }
 
-function cuadratica() {
-    fetch("/cuadratica", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-            a:parseFloat(ca.value),
-            b:parseFloat(cb.value),
-            c:parseFloat(cc.value)
-        })
-    })
+function resolverSistema(){
+    let data={
+        a:parseFloat(a.value),
+        b:parseFloat(b.value),
+        c:parseFloat(c.value),
+        d:parseFloat(d.value),
+        e:parseFloat(e.value),
+        f:parseFloat(f.value)
+    }
+
+    fetch("/sistema",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
     .then(r=>r.json())
-    .then(data=>{
-        res2.innerText = data.resultado
-        graficar(data.x, data.y, "graf2", chart2, (c)=>chart2=c)
+    .then(d=>{
+        res3.innerText=d.resultado
+        graficarSistema(d.x,d.y1,d.y2)
     })
 }
 
-function sistema() {
-    fetch("/sistema", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-            tipo:"directo",
-            a:parseFloat(sa.value),
-            b:parseFloat(sb.value),
-            c:parseFloat(sc.value),
-            d:parseFloat(sd.value),
-            e:parseFloat(se.value),
-            f:parseFloat(sf.value)
-        })
-    })
-    .then(r=>r.json())
-    .then(data=>{
-        res3.innerText = data.resultado
-    })
-}
 
-function graficar(x, y, id, chart, setChart){
+// ===== GRAFICAS =====
+function graficar(x,y,id,set,chart){
     if(chart) chart.destroy()
+    const ctx=document.getElementById(id)
+    set(new Chart(ctx,{type:"line",data:{labels:x,datasets:[{data:y}]}}))
+}
 
-    const ctx = document.getElementById(id)
-
-    setChart(new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: x,
-            datasets: [{
-                label: "Gráfica",
-                data: y
-            }]
+function graficarSistema(x,y1,y2){
+    if(chart3) chart3.destroy()
+    chart3=new Chart(graf3,{
+        type:"line",
+        data:{
+            labels:x,
+            datasets:[
+                {label:"Recta 1",data:y1},
+                {label:"Recta 2",data:y2}
+            ]
         }
-    }))
+    })
 }
 </script>
 
-</body>
-</html>
 </body>
 </html>
