@@ -1,159 +1,109 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request, send_file
 import numpy as np
 import matplotlib.pyplot as plt
-import io
-import base64
 import os
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image
+from reportlab.lib.styles import getSampleStyleSheet
 
 app = Flask(__name__)
 
 # ======================
-# GRAFICA
-# ======================
-def generar_grafica(x, y):
-    plt.figure()
-    plt.plot(x, y)
-    plt.grid()
-
-    img = io.BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
-    grafica = base64.b64encode(img.getvalue()).decode()
-    plt.close()
-
-    return grafica
-
-
-# ======================
-# INICIO
+# PAGINA PRINCIPAL
 # ======================
 @app.route("/")
-def inicio():
+def home():
     return render_template("index.html")
 
-
 # ======================
-# LINEAL
+# ECUACION LINEAL
 # ======================
-@app.route("/lineal", methods=["POST"])
+@app.route("/lineal", methods=["GET", "POST"])
 def lineal():
-    try:
-        tipo = request.form.get("tipo")
-
-        if tipo == "pendiente":
-            m = float(request.form.get("m", 0))
-            b = float(request.form.get("b", 0))
-        else:
-            x1 = float(request.form.get("x1", 0))
-            y1 = float(request.form.get("y1", 0))
-            x2 = float(request.form.get("x2", 0))
-            y2 = float(request.form.get("y2", 0))
-
-            if x1 == x2:
-                return render_template("index.html", resultado="Error: x1 no puede ser igual a x2")
-
-            m = (y2 - y1) / (x2 - x1)
-            b = y1 - m * x1
+    if request.method == "POST":
+        m = float(request.form["m"])
+        b = float(request.form["b"])
 
         x = np.linspace(-10, 10, 100)
-        y = m * x + b
+        y = m*x + b
 
-        grafica = generar_grafica(x, y)
-        resultado = f"y = {round(m,2)}x + {round(b,2)}"
+        # gráfica
+        plt.figure()
+        plt.plot(x, y)
+        plt.title("Ecuación Lineal")
+        plt.grid()
 
-        return render_template("index.html", resultado=resultado, grafica=grafica)
+        img_path = "static/lineal.png"
+        os.makedirs("static", exist_ok=True)
+        plt.savefig(img_path)
+        plt.close()
 
-    except:
-        return render_template("index.html", resultado="Error en datos")
+        # PDF
+        pdf_path = "resultado_lineal.pdf"
+        doc = SimpleDocTemplate(pdf_path)
+        styles = getSampleStyleSheet()
 
+        content = []
+        content.append(Paragraph(f"Ecuación: y = {m}x + {b}", styles["Normal"]))
+        content.append(Image(img_path))
+
+        doc.build(content)
+
+        return render_template("resultado.html",
+                               ecuacion=f"y = {m}x + {b}",
+                               imagen=img_path,
+                               pdf=pdf_path)
+
+    return render_template("lineal.html")
 
 # ======================
-# CUADRATICA
+# ECUACION CUADRATICA
 # ======================
-@app.route("/cuadratica", methods=["POST"])
+@app.route("/cuadratica", methods=["GET", "POST"])
 def cuadratica():
-    try:
-        a = float(request.form.get("a", 0))
-        b = float(request.form.get("b", 0))
-        c = float(request.form.get("c", 0))
+    if request.method == "POST":
+        a = float(request.form["a"])
+        b = float(request.form["b"])
+        c = float(request.form["c"])
 
         x = np.linspace(-10, 10, 100)
-        y = a * x**2 + b * x + c
+        y = a*x**2 + b*x + c
 
-        d = b**2 - 4*a*c
+        plt.figure()
+        plt.plot(x, y)
+        plt.title("Ecuación Cuadrática")
+        plt.grid()
 
-        if d >= 0:
-            x1 = (-b + np.sqrt(d)) / (2*a)
-            x2 = (-b - np.sqrt(d)) / (2*a)
-            resultado = f"Raíces: {round(x1,2)} , {round(x2,2)}"
-        else:
-            resultado = "No tiene raíces reales"
+        img_path = "static/cuadratica.png"
+        os.makedirs("static", exist_ok=True)
+        plt.savefig(img_path)
+        plt.close()
 
-        grafica = generar_grafica(x, y)
+        pdf_path = "resultado_cuadratica.pdf"
+        doc = SimpleDocTemplate(pdf_path)
+        styles = getSampleStyleSheet()
 
-        return render_template("index.html", resultado=resultado, grafica=grafica)
+        content = []
+        content.append(Paragraph(f"Ecuación: {a}x² + {b}x + {c}", styles["Normal"]))
+        content.append(Image(img_path))
 
-    except:
-        return render_template("index.html", resultado="Error en datos")
+        doc.build(content)
 
+        return render_template("resultado.html",
+                               ecuacion=f"{a}x² + {b}x + {c}",
+                               imagen=img_path,
+                               pdf=pdf_path)
 
-# ======================
-# SISTEMA 2x2
-# ======================
-@app.route("/sistema2", methods=["POST"])
-def sistema2():
-    try:
-        A = np.array([
-            [float(request.form.get("a1", 0)), float(request.form.get("b1", 0))],
-            [float(request.form.get("a2", 0)), float(request.form.get("b2", 0))]
-        ])
-
-        B = np.array([
-            float(request.form.get("c1", 0)),
-            float(request.form.get("c2", 0))
-        ])
-
-        sol = np.linalg.solve(A, B)
-
-        resultado = f"x = {round(sol[0],2)}, y = {round(sol[1],2)}"
-
-    except:
-        resultado = "Sistema sin solución o error"
-
-    return render_template("index.html", resultado=resultado)
-
+    return render_template("cuadratica.html")
 
 # ======================
-# SISTEMA 3x3
+# DESCARGA PDF
 # ======================
-@app.route("/sistema3", methods=["POST"])
-def sistema3():
-    try:
-        A = np.array([
-            [float(request.form.get("a1", 0)), float(request.form.get("b1", 0)), float(request.form.get("c1", 0))],
-            [float(request.form.get("a2", 0)), float(request.form.get("b2", 0)), float(request.form.get("c2", 0))],
-            [float(request.form.get("a3", 0)), float(request.form.get("b3", 0)), float(request.form.get("c3", 0))]
-        ])
-
-        B = np.array([
-            float(request.form.get("d1", 0)),
-            float(request.form.get("d2", 0)),
-            float(request.form.get("d3", 0))
-        ])
-
-        sol = np.linalg.solve(A, B)
-
-        resultado = f"x={round(sol[0],2)}, y={round(sol[1],2)}, z={round(sol[2],2)}"
-
-    except:
-        resultado = "Sistema sin solución o error"
-
-    return render_template("index.html", resultado=resultado)
-
+@app.route("/descargar/<archivo>")
+def descargar(archivo):
+    return send_file(archivo, as_attachment=True)
 
 # ======================
 # MAIN
 # ======================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
