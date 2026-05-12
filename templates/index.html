@@ -1,65 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculadora</title>
+    <title>Calculadora de Ecuaciones</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+        }
+
+        .menu {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .box {
+            margin-top: 100px;
+            background: rgba(0,0,0,0.4);
+            padding: 30px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Calculadora de Ecuaciones</h1>
+<div class="menu">
+    <select onchange="location = this.value;">
+        <option>Selecciona ecuación</option>
+        <option value="/lineal">Lineal</option>
+        <option value="/cuadratica">Cuadrática</option>
+    </select>
+</div>
 
-<!-- LINEAL -->
-<h2>Lineal</h2>
-<form action="/lineal" method="post">
-<select name="tipo">
-<option value="pendiente">m y b</option>
-<option value="dos_puntos">2 puntos</option>
-</select><br>
-
-<input name="m" placeholder="m">
-<input name="b" placeholder="b"><br>
-
-<input name="x1" placeholder="x1">
-<input name="y1" placeholder="y1">
-<input name="x2" placeholder="x2">
-<input name="y2" placeholder="y2"><br>
-
-<button>Calcular</button>
-</form>
-
-<!-- CUADRATICA -->
-<h2>Cuadrática</h2>
-<form action="/cuadratica" method="post">
-<input name="a" placeholder="a">
-<input name="b" placeholder="b">
-<input name="c" placeholder="c">
-<button>Calcular</button>
-</form>
-
-<!-- SISTEMA 2x2 -->
-<h2>Sistema 2x2</h2>
-<form action="/sistema2" method="post">
-<input name="a1"><input name="b1"><input name="c1"><br>
-<input name="a2"><input name="b2"><input name="c2"><br>
-<button>Calcular</button>
-</form>
-
-<!-- SISTEMA 3x3 -->
-<h2>Sistema 3x3</h2>
-<form action="/sistema3" method="post">
-<input name="a1"><input name="b1"><input name="c1"><input name="d1"><br>
-<input name="a2"><input name="b2"><input name="c2"><input name="d2"><br>
-<input name="a3"><input name="b3"><input name="c3"><input name="d3"><br>
-<button>Calcular</button>
-</form>
-
-{% if resultado %}
-<h2>{{resultado}}</h2>
-{% endif %}
-
-{% if grafica %}
-<img src="data:image/png;base64,{{grafica}}">
-{% endif %}
+<div class="box">
+    <h1>Bienvenido</h1>
+    <p>Esta app resuelve:</p>
+    <ul>
+        <li>Ecuaciones lineales (y = mx + b)</li>
+        <li>Ecuaciones cuadráticas (ax² + bx + c)</li>
+    </ul>
+    <p>Selecciona una opción en el menú superior</p>
+</div>
 
 </body>
 </html>
-
