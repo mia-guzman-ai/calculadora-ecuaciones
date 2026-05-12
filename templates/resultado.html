@@ -9,14 +9,13 @@
 
 <p>{{ ecuacion }}</p>
 
-<img src="{{ imagen }}" width="400">
+{% if imagen %}
+    <img src="{{ imagen }}" width="400">
+{% endif %}
 
 <br><br>
 
-<a href="/descargar/{{ pdf }}">Descargar PDF</a>
-
-<br><br>
-<a href="/">Volver</a>
+<a href="/">Volver al inicio</a>
 
 </body>
 </html>
