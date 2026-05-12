@@ -1,89 +1,296 @@
-from flask import Flask, request, jsonify, send_from_directory
-import numpy as np
-import matplotlib.pyplot as plt
-import io, base64
+from flask import Flask, request, jsonify, send_from_directory 
 
-app = Flask(__name__)
+  
 
-# HOME
-@app.route("/")
-def home():
-    return send_from_directory(".", "index.html")
+app = Flask(__name__) 
 
-# LINEAL
-@app.route("/lineal", methods=["POST"])
-def lineal():
-    data = request.json
-    m = data["m"]
-    b = data["b"]
+  
 
-    x = np.linspace(-10, 10, 100)
-    y = m*x + b
+@app.route("/") 
 
-    plt.figure()
-    plt.plot(x, y)
-    plt.title("Ecuación Lineal")
+def home(): 
 
-    img = io.BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
+    return send_from_directory(".", "index.html") 
 
-    grafica = base64.b64encode(img.getvalue()).decode()
+  
 
-    return jsonify({"grafica": grafica})
+  
 
-# CUADRATICA
-@app.route("/cuadratica", methods=["POST"])
-def cuadratica():
-    data = request.json
-    a = data["a"]
-    b = data["b"]
-    c = data["c"]
+# ====================== 
 
-    x = np.linspace(-10, 10, 100)
-    y = a*x**2 + b*x + c
+# LINEAL (3 FORMAS) 
 
-    plt.figure()
-    plt.plot(x, y)
-    plt.title("Ecuación Cuadrática")
+# ====================== 
 
-    img = io.BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
+@app.route("/lineal", methods=["POST"]) 
 
-    grafica = base64.b64encode(img.getvalue()).decode()
+def lineal(): 
 
-    return jsonify({"grafica": grafica})
+    data = request.json 
 
-# SISTEMA 2x2
-@app.route("/sistema2", methods=["POST"])
-def sistema2():
-    data = request.json
+    tipo = data["tipo"] 
 
-    A = np.array([
-        [float(data["a1"]), float(data["b1"])],
-        [float(data["a2"]), float(data["b2"])]
-    ])
+  
 
-    B = np.array([
-        float(data["c1"]),
-        float(data["c2"])
-    ])
+    x_vals = list(range(-10, 11)) 
 
-    sol = np.linalg.solve(A, B)
+  
 
-    return jsonify({
-        "x": round(sol[0],2),
-        "y": round(sol[1],2)
-    })
+    try: 
 
-# SISTEMA 3x3
-@app.route("/sistema3", methods=["POST"])
-def sistema3():
-    # puedes completar esto luego
-    return jsonify({"msg": "pendiente 3x3"})
+        # ax + b = 0 
 
-if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 8080))
+        if tipo == "general": 
+
+            a = data["a"] 
+
+            b = data["b"] 
+
+  
+
+            if a == 0: 
+
+                return jsonify({"resultado": "No válida"}) 
+
+  
+
+            y_vals = [a*x + b for x in x_vals] 
+
+            resultado = f"x = {-b/a:.2f}" 
+
+  
+
+        # dos puntos 
+
+        elif tipo == "dos_puntos": 
+
+            x1, y1 = data["x1"], data["y1"] 
+
+            x2, y2 = data["x2"], data["y2"] 
+
+  
+
+            if x1 == x2: 
+
+                return jsonify({"resultado": "Recta vertical"}) 
+
+  
+
+            m = (y2 - y1)/(x2 - x1) 
+
+            b = y1 - m*x1 
+
+  
+
+            y_vals = [m*x + b for x in x_vals] 
+
+            resultado = f"y = {m:.2f}x + {b:.2f}" 
+
+  
+
+        # punto pendiente 
+
+        elif tipo == "punto_pendiente": 
+
+            m = data["m"] 
+
+            x1 = data["x1"] 
+
+            y1 = data["y1"] 
+
+  
+
+            b = y1 - m*x1 
+
+            y_vals = [m*x + b for x in x_vals] 
+
+            resultado = f"y = {m:.2f}x + {b:.2f}" 
+
+  
+
+        else: 
+
+            return jsonify({"resultado": "Tipo inválido"}) 
+
+  
+
+        return jsonify({"x": x_vals, "y": y_vals, "resultado": resultado}) 
+
+  
+
+    except: 
+
+        return jsonify({"resultado": "Error en datos"}) 
+
+  
+
+  
+
+# ====================== 
+
+# CUADRATICA (2 FORMAS) 
+
+# ====================== 
+
+@app.route("/cuadratica", methods=["POST"]) 
+
+def cuadratica(): 
+
+    data = request.json 
+
+    tipo = data["tipo"] 
+
+  
+
+    x_vals = list(range(-10, 11)) 
+
+  
+
+    try: 
+
+        if tipo == "general": 
+
+            a, b, c = data["a"], data["b"], data["c"] 
+
+  
+
+        elif tipo == "tres_puntos": 
+
+            x1,y1 = data["x1"], data["y1"] 
+
+            x2,y2 = data["x2"], data["y2"] 
+
+            x3,y3 = data["x3"], data["y3"] 
+
+  
+
+            a = ((y3 - ((y2-y1)/(x2-x1)*(x3-x1)+y1)) / ((x3-x1)*(x3-x2))) 
+
+            b = (y2-y1)/(x2-x1) - a*(x1+x2) 
+
+            c = y1 - a*x1**2 - b*x1 
+
+  
+
+        else: 
+
+            return jsonify({"resultado": "Tipo inválido"}) 
+
+  
+
+        if a == 0: 
+
+            return jsonify({"resultado": "No es cuadrática"}) 
+
+  
+
+        y_vals = [a*x**2 + b*x + c for x in x_vals] 
+
+  
+
+        d = b**2 - 4*a*c 
+
+  
+
+        if d > 0: 
+
+            r1 = (-b + math.sqrt(d))/(2*a) 
+
+            r2 = (-b - math.sqrt(d))/(2*a) 
+
+            res = f"Raíces: {r1:.2f}, {r2:.2f}" 
+
+        elif d == 0: 
+
+            r = -b/(2*a) 
+
+            res = f"Raíz: {r:.2f}" 
+
+        else: 
+
+            res = "No reales" 
+
+  
+
+        return jsonify({"x": x_vals, "y": y_vals, "resultado": res}) 
+
+  
+
+    except: 
+
+        return jsonify({"resultado": "Error en datos"}) 
+
+  
+
+  
+
+# ====================== 
+
+# SISTEMA 
+
+# ====================== 
+
+@app.route("/sistema", methods=["POST"]) 
+
+def sistema(): 
+
+    data = request.json 
+
+  
+
+    a,b,c = data["a"], data["b"], data["c"] 
+
+    d,e,f = data["d"], data["e"], data["f"] 
+
+  
+
+    det = a*e - b*d 
+
+  
+
+    if det == 0: 
+
+        return jsonify({"resultado": "Sin solución"}) 
+
+  
+
+    x = (c*e - b*f)/det 
+
+    y = (a*f - c*d)/det 
+
+  
+
+    # para graficar 
+
+    x_vals = list(range(-10,11)) 
+
+    y1 = [(-a*x + c)/b for x in x_vals] 
+
+    y2 = [(-d*x + f)/e for x in x_vals] 
+
+  
+
+    return jsonify({ 
+
+        "resultado": f"x={x:.2f}, y={y:.2f}", 
+
+        "x": x_vals, 
+
+        "y1": y1, 
+
+        "y2": y2 
+
+    }) 
+
+  
+
+  
+
+if __name__ == "__main__": 
+
+    import os 
+
+    port = int(os.environ.get("PORT", 8080)) 
+
+    app.run(host="0.0.0.0", port=port) 
     app.run(host="0.0.0.0", port=port)
