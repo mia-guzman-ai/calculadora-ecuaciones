@@ -1,10 +1,37 @@
 <h2>Ecuación Lineal</h2>
 
 <form method="POST">
-a: <input name="a"><br>
-b: <input name="b"><br>
 
+<select name="tipo" onchange="cambiarFormulario(this.value)">
+    <option value="coef">Forma: ax + b</option>
+    <option value="puntos">Forma: 2 puntos</option>
+</select>
+
+<div id="coef">
+    <p>Ejemplo: 2x + 3</p>
+    a: <input name="a"><br>
+    b: <input name="b"><br>
+</div>
+
+<div id="puntos" style="display:none;">
+    <p>Ejemplo: (1,2) y (3,4)</p>
+    x1: <input name="x1">
+    y1: <input name="y1"><br>
+    x2: <input name="x2">
+    y2: <input name="y2"><br>
+</div>
+
+<br>
 <button type="submit">Calcular</button>
+<button type="reset">Limpiar</button>
+
 </form>
 
 <a href="/">Volver</a>
+
+<script>
+function cambiarFormulario(tipo){
+    document.getElementById("coef").style.display = tipo=="coef"?"block":"none";
+    document.getElementById("puntos").style.display = tipo=="puntos"?"block":"none";
+}
+</script>
