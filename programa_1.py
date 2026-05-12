@@ -6,15 +6,14 @@ import base64
 
 app = Flask(__name__)
 
-def crear_grafica(funcion_x, funcion_y):
-    fig, ax = plt.subplots(figsize=(4,3))  # gráfica más pequeña
-    ax.plot(funcion_x, funcion_y)
+def crear_grafica(x, y):
+    fig, ax = plt.subplots(figsize=(4,3))
+    ax.plot(x, y)
     ax.grid()
 
     img = io.BytesIO()
     plt.savefig(img, format='png', bbox_inches='tight')
     img.seek(0)
-
     return base64.b64encode(img.getvalue()).decode()
 
 @app.route("/", methods=["GET", "POST"])
@@ -34,37 +33,36 @@ def index():
             y = m*x + b
 
             grafica = crear_grafica(x, y)
-            resultado = f"La recta tiene pendiente {m} y corta en {b}"
+            resultado = f"La recta es y = {m}x + {b}"
 
         elif metodo == "cuadratica":
             a = float(request.form["a"])
             b = float(request.form["b"])
             c = float(request.form["c"])
 
-            discriminante = b**2 - 4*a*c
+            d = b**2 - 4*a*c
 
-            if discriminante >= 0:
-                x1 = (-b + np.sqrt(discriminante)) / (2*a)
-                x2 = (-b - np.sqrt(discriminante)) / (2*a)
-                resultado = f"Soluciones reales: x1={x1:.2f}, x2={x2:.2f}"
+            if d >= 0:
+                x1 = (-b + np.sqrt(d)) / (2*a)
+                x2 = (-b - np.sqrt(d)) / (2*a)
+                resultado = f"Soluciones: x1={x1:.2f}, x2={x2:.2f}"
             else:
-                resultado = "No tiene soluciones reales"
+                resultado = "No hay soluciones reales"
 
             x = np.linspace(-10, 10, 100)
             y = a*x**2 + b*x + c
             grafica = crear_grafica(x, y)
 
         elif metodo == "sistema2":
-            a1 = float(request.form["a1"])
-            b1 = float(request.form["b1"])
-            c1 = float(request.form["c1"])
+            A = np.array([
+                [float(request.form["a1"]), float(request.form["b1"])],
+                [float(request.form["a2"]), float(request.form["b2"])]
+            ])
 
-            a2 = float(request.form["a2"])
-            b2 = float(request.form["b2"])
-            c2 = float(request.form["c2"])
-
-            A = np.array([[a1, b1], [a2, b2]])
-            B = np.array([c1, c2])
+            B = np.array([
+                float(request.form["c1"]),
+                float(request.form["c2"])
+            ])
 
             sol = np.linalg.solve(A, B)
             resultado = f"x={sol[0]:.2f}, y={sol[1]:.2f}"
@@ -85,7 +83,16 @@ def index():
             sol = np.linalg.solve(A, B)
             resultado = f"x={sol[0]:.2f}, y={sol[1]:.2f}, z={sol[2]:.2f}"
 
-    return render_template("index.html", resultado=resultado, grafica=grafica, metodo=metodo)
+        elif metodo == "exponencial":
+            a = float(request.form["a"])
+
+            x = np.linspace(-5, 5, 100)
+            y = a**x
+
+            grafica = crear_grafica(x, y)
+            resultado = f"Función: y = {a}^x"
+
+    return render_template("index.html", resultado=resultado, grafica=grafica)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3000)
+    app.run(host="0.0.0.0", port=8080)
