@@ -2,92 +2,142 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Solver Pro Max</title>
+<title>Solver Pro</title>
 <link rel="stylesheet" href="/static/style.css">
 
 <script>
-function mostrar(opcion){
-    document.querySelectorAll(".seccion").forEach(e=>e.style.display="none");
-    document.getElementById(opcion).style.display="block";
+function mostrar(id){
+    document.querySelectorAll(".panel").forEach(e=>e.style.display="none");
+    if(id !== ""){
+        document.getElementById(id).style.display="block";
+    }
+}
+
+function abrirMenu(){
+    document.getElementById("menu").classList.toggle("activo");
 }
 </script>
+
 </head>
 
 <body>
 
+<!-- BIENVENIDA -->
 <div class="bienvenida">
-    <h1>🔥 Solver Matemático Pro Max</h1>
-    <p>Resuelve diferentes tipos de ecuaciones fácilmente</p>
+    <h1>🔥 Solver Matemático Pro</h1>
+    <p>Resuelve ecuaciones de forma visual y sencilla</p>
+    <button onclick="abrirMenu()">☰ Menú</button>
 </div>
 
-<div class="menu">
+<!-- MENÚ DESPLEGABLE -->
+<div id="menu" class="menu">
     <button onclick="mostrar('lineal')">Lineal</button>
     <button onclick="mostrar('cuadratica')">Cuadrática</button>
     <button onclick="mostrar('sistema2')">2x2</button>
     <button onclick="mostrar('sistema3')">3x3</button>
-    <button onclick="mostrar('exponencial')">Exponencial</button>
 </div>
 
 <!-- LINEAL -->
-<div id="lineal" class="seccion">
-<h2>y = mx + b</h2>
+<div id="lineal" class="panel">
+<h2>Ecuación Lineal</h2>
+<p>Forma: y = mx + b</p>
+
 <form method="post">
 <input type="hidden" name="metodo" value="lineal">
-<input name="m" placeholder="Pendiente (m)">
-<input name="b" placeholder="Intersección (b)">
+
+<label>Pendiente (m)</label>
+<input name="m" placeholder="Ej: 2" required>
+
+<label>Intersección (b)</label>
+<input name="b" placeholder="Ej: 3" required>
+
 <button>Resolver</button>
 <button type="reset">Limpiar</button>
 </form>
+
+<button onclick="mostrar('')">⬅ Regresar</button>
 </div>
 
 <!-- CUADRATICA -->
-<div id="cuadratica" class="seccion">
-<h2>ax² + bx + c</h2>
+<div id="cuadratica" class="panel">
+<h2>Ecuación Cuadrática</h2>
+<p>Forma: ax² + bx + c</p>
+
 <form method="post">
 <input type="hidden" name="metodo" value="cuadratica">
-<input name="a" placeholder="a">
-<input name="b" placeholder="b">
-<input name="c" placeholder="c">
-<button>Resolver</button>
-</form>
-</div>
 
-<!-- 2x2 -->
-<div id="sistema2" class="seccion">
-<h2>Sistema 2x2</h2>
-<form method="post">
-<input type="hidden" name="metodo" value="sistema2">
-<input name="a1" placeholder="a1">
-<input name="b1" placeholder="b1">
-<input name="c1" placeholder="c1">
-<input name="a2" placeholder="a2">
-<input name="b2" placeholder="b2">
-<input name="c2" placeholder="c2">
-<button>Resolver</button>
-</form>
-</div>
+<label>a</label>
+<input name="a" placeholder="Ej: 1" required>
 
-<!-- 3x3 -->
-<div id="sistema3" class="seccion">
-<h2>Sistema 3x3</h2>
-<form method="post">
-<input type="hidden" name="metodo" value="sistema3">
-<input name="a1"><input name="b1"><input name="c1"><input name="d1">
-<input name="a2"><input name="b2"><input name="c2"><input name="d2">
-<input name="a3"><input name="b3"><input name="c3"><input name="d3">
-<button>Resolver</button>
-</form>
-</div>
+<label>b</label>
+<input name="b" placeholder="Ej: -3" required>
 
-<!-- EXPONENCIAL -->
-<div id="exponencial" class="seccion">
-<h2>y = a^x</h2>
-<form method="post">
-<input type="hidden" name="metodo" value="exponencial">
-<input name="a" placeholder="Base (a)">
+<label>c</label>
+<input name="c" placeholder="Ej: 2" required>
+
 <button>Resolver</button>
 <button type="reset">Limpiar</button>
 </form>
+
+<button onclick="mostrar('')">⬅ Regresar</button>
+</div>
+
+<!-- SISTEMA 2x2 -->
+<div id="sistema2" class="panel">
+<h2>Sistema 2x2</h2>
+<p>Dos ecuaciones con dos incógnitas</p>
+
+<form method="post">
+<input type="hidden" name="metodo" value="sistema2">
+
+<p>Ecuación 1</p>
+<input name="a1" placeholder="coeficiente de x" required>
+<input name="b1" placeholder="coeficiente de y" required>
+<input name="c1" placeholder="resultado" required>
+
+<p>Ecuación 2</p>
+<input name="a2" placeholder="coeficiente de x" required>
+<input name="b2" placeholder="coeficiente de y" required>
+<input name="c2" placeholder="resultado" required>
+
+<button>Resolver</button>
+<button type="reset">Limpiar</button>
+</form>
+
+<button onclick="mostrar('')">⬅ Regresar</button>
+</div>
+
+<!-- SISTEMA 3x3 -->
+<div id="sistema3" class="panel">
+<h2>Sistema 3x3</h2>
+<p>Tres ecuaciones con tres incógnitas</p>
+
+<form method="post">
+<input type="hidden" name="metodo" value="sistema3">
+
+<p>Ecuación 1</p>
+<input name="a1" placeholder="x" required>
+<input name="b1" placeholder="y" required>
+<input name="c1" placeholder="z" required>
+<input name="d1" placeholder="resultado" required>
+
+<p>Ecuación 2</p>
+<input name="a2" placeholder="x" required>
+<input name="b2" placeholder="y" required>
+<input name="c2" placeholder="z" required>
+<input name="d2" placeholder="resultado" required>
+
+<p>Ecuación 3</p>
+<input name="a3" placeholder="x" required>
+<input name="b3" placeholder="y" required>
+<input name="c3" placeholder="z" required>
+<input name="d3" placeholder="resultado" required>
+
+<button>Resolver</button>
+<button type="reset">Limpiar</button>
+</form>
+
+<button onclick="mostrar('')">⬅ Regresar</button>
 </div>
 
 <!-- RESULTADO -->
