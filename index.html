@@ -2,14 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calculadora Matemática</title>
-<style>
+<title>Calculadora Matemática Pro</title>
 
+<style>
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: #333;
+    font-family: Arial;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
 }
 
 .container {
@@ -18,123 +17,212 @@ body {
     background: white;
     padding: 25px;
     border-radius: 15px;
-    box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
 }
 
-h1 {
+h1, h2 {
     text-align: center;
-    color: #444;
-}
-
-.card {
-    margin-top: 20px;
-    padding: 20px;
-    border-radius: 12px;
-    background: #f7f7f7;
-}
-
-label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-input {
-    width: 95%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-small {
-    color: #666;
 }
 
 button {
-    margin-top: 15px;
-    padding: 12px;
+    padding: 10px;
+    margin: 10px 0;
     width: 100%;
     border: none;
-    border-radius: 10px;
-    background: #667eea;
+    border-radius: 8px;
+    background: #4facfe;
     color: white;
     font-size: 16px;
     cursor: pointer;
 }
 
 button:hover {
-    background: #5a67d8;
+    background: #0077ff;
 }
 
-#grafica {
-    margin-top: 20px;
-    text-align: center;
+input {
+    width: 95%;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+.section {
+    display: none;
+}
+
+.active {
+    display: block;
 }
 
 #grafica img {
-    width: 70%;   /* 🔥 más pequeña */
-    border-radius: 10px;
+    width: 60%;
 }
-
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>📊 Calculadora Matemática</h1>
+<!-- 🏠 MENU -->
+<div id="menu" class="section active">
+    <h1>📊 Bienvenido</h1>
+    <p>Selecciona el método que deseas usar:</p>
 
-<div class="card">
-
-<h3>📈 Ecuación Lineal</h3>
-
-<label>Valor de m (pendiente)</label>
-<input id="m" placeholder="Ej: 2">
-<small>Indica qué tan inclinada es la recta</small>
-
-<label>Valor de b (intersección)</label>
-<input id="b" placeholder="Ej: 3">
-<small>Donde la recta corta el eje Y</small>
-
-<button onclick="calcular()">Calcular</button>
-
+    <button onclick="mostrar('lineal')">Ecuación Lineal</button>
+    <button onclick="mostrar('cuadratica')">Ecuación Cuadrática</button>
+    <button onclick="mostrar('sistema2')">Sistema 2x2</button>
+    <button onclick="mostrar('sistema3')">Sistema 3x3</button>
 </div>
 
-<div id="grafica"></div>
+<!-- 📈 LINEAL -->
+<div id="lineal" class="section">
+<h2>Ecuación Lineal</h2>
+<p>Forma: y = mx + b. Sirve para representar rectas.</p>
+
+<input id="m" placeholder="Pendiente m (ej: 2)">
+<input id="b" placeholder="Intersección b (ej: 3)">
+
+<button onclick="calcLineal()">Calcular</button>
+<button onclick="limpiar()">Limpiar</button>
+<button onclick="mostrar('menu')">Regresar</button>
+
+<div id="graficaLineal"></div>
+</div>
+
+<!-- 📉 CUADRATICA -->
+<div id="cuadratica" class="section">
+<h2>Ecuación Cuadrática</h2>
+<p>Forma: ax² + bx + c. Sirve para parábolas.</p>
+
+<input id="a" placeholder="a">
+<input id="b2" placeholder="b">
+<input id="c" placeholder="c">
+
+<button onclick="calcCuadratica()">Calcular</button>
+<button onclick="limpiar()">Limpiar</button>
+<button onclick="mostrar('menu')">Regresar</button>
+
+<div id="graficaCuad"></div>
+</div>
+
+<!-- 🔢 SISTEMA 2x2 -->
+<div id="sistema2" class="section">
+<h2>Sistema 2x2</h2>
+<p>Dos ecuaciones con dos incógnitas.</p>
+
+<input id="a1" placeholder="a1">
+<input id="b1" placeholder="b1">
+<input id="c1" placeholder="c1">
+
+<input id="a2" placeholder="a2">
+<input id="b2s" placeholder="b2">
+<input id="c2" placeholder="c2">
+
+<button onclick="calc2()">Calcular</button>
+<button onclick="limpiar()">Limpiar</button>
+<button onclick="mostrar('menu')">Regresar</button>
+
+<div id="res2"></div>
+</div>
+
+<!-- 🔢 SISTEMA 3x3 -->
+<div id="sistema3" class="section">
+<h2>Sistema 3x3</h2>
+<p>Tres ecuaciones con tres incógnitas.</p>
+
+<input placeholder="a1"><input placeholder="b1"><input placeholder="c1"><input placeholder="d1">
+<input placeholder="a2"><input placeholder="b2"><input placeholder="c2"><input placeholder="d2">
+<input placeholder="a3"><input placeholder="b3"><input placeholder="c3"><input placeholder="d3">
+
+<button onclick="calc3()">Calcular</button>
+<button onclick="limpiar()">Limpiar</button>
+<button onclick="mostrar('menu')">Regresar</button>
+
+<div id="res3"></div>
+</div>
 
 </div>
 
 <script>
 
-function calcular() {
+// navegación
+function mostrar(id){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
 
-    let m = document.getElementById("m").value;
-    let b = document.getElementById("b").value;
+// limpiar
+function limpiar(){
+    document.querySelectorAll('input').forEach(i=>i.value="");
+    document.querySelectorAll('[id^="grafica"]').forEach(g=>g.innerHTML="");
+}
 
+// LINEAL
+function calcLineal(){
     fetch("/lineal", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-            tipo: "pendiente",
-            m: parseFloat(m),
-            b: parseFloat(b)
+            tipo:"pendiente",
+            m: parseFloat(m.value),
+            b: parseFloat(b.value)
         })
     })
-    .then(res => res.json())
-    .then(data => {
-
-        document.getElementById("grafica").innerHTML =
-            `<img src="data:image/png;base64,${data.grafica}">`;
-
+    .then(r=>r.json())
+    .then(d=>{
+        graficaLineal.innerHTML = `<img src="data:image/png;base64,${d.grafica}">`;
     });
+}
 
+// CUADRATICA
+function calcCuadratica(){
+    fetch("/cuadratica", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            a: parseFloat(a.value),
+            b: parseFloat(b2.value),
+            c: parseFloat(c.value)
+        })
+    })
+    .then(r=>r.json())
+    .then(d=>{
+        graficaCuad.innerHTML = `<img src="data:image/png;base64,${d.grafica}">`;
+    });
+}
+
+// 2x2
+function calc2(){
+    fetch("/sistema2", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            a1:a1.value,b1:b1.value,c1:c1.value,
+            a2:a2.value,b2:b2s.value,c2:c2.value
+        })
+    })
+    .then(r=>r.json())
+    .then(d=>{
+        res2.innerHTML = JSON.stringify(d);
+    });
+}
+
+// 3x3
+function calc3(){
+    fetch("/sistema3", {
+        method:"POST"
+    })
+    .then(r=>r.json())
+    .then(d=>{
+        res3.innerHTML = JSON.stringify(d);
+    });
 }
 
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
