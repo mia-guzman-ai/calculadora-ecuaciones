@@ -39,76 +39,88 @@ def inicio():
 # ======================
 @app.route("/lineal", methods=["POST"])
 def lineal():
-    tipo = request.form["tipo"]
+    try:
+        tipo = request.form["tipo"]
 
-    if tipo == "pendiente":
-        m = float(request.form["m"])
-        b = float(request.form["b"])
-        x = np.linspace(-10,10,100)
-        y = m*x + b
-        resultado = f"y = {m}x + {b}"
+        if tipo == "pendiente":
+            m = float(request.form["m"])
+            b = float(request.form["b"])
+            x = np.linspace(-10,10,100)
+            y = m*x + b
+            resultado = f"y = {m}x + {b}"
 
-    elif tipo == "dos_puntos":
-        x1 = float(request.form["x1"])
-        y1 = float(request.form["y1"])
-        x2 = float(request.form["x2"])
-        y2 = float(request.form["y2"])
-        m = (y2-y1)/(x2-x1)
-        b = y1 - m*x1
-        x = np.linspace(-10,10,100)
-        y = m*x + b
-        resultado = f"y = {round(m,2)}x + {round(b,2)}"
+        elif tipo == "dos_puntos":
+            x1 = float(request.form["x1"])
+            y1 = float(request.form["y1"])
+            x2 = float(request.form["x2"])
+            y2 = float(request.form["y2"])
 
-    grafica = generar_grafica(x,y)
+            if x1 == x2:
+                return render_template("index.html", resultado="Error: división entre 0")
 
-    return render_template("index.html", resultado=resultado, grafica=grafica)
+            m = (y2-y1)/(x2-x1)
+            b = y1 - m*x1
+            x = np.linspace(-10,10,100)
+            y = m*x + b
+            resultado = f"y = {round(m,2)}x + {round(b,2)}"
 
+        grafica = generar_grafica(x,y)
 
+        return render_template("index.html", resultado=resultado, grafica=grafica)
+
+    except:
+        return render_template("index.html", resultado="Error en datos ingresados")
 # ======================
 # CUADRATICA
 # ======================
 @app.route("/cuadratica", methods=["POST"])
 def cuadratica():
-    a = float(request.form["a"])
-    b = float(request.form["b"])
-    c = float(request.form["c"])
+    try:
+        a = float(request.form["a"])
+        b = float(request.form["b"])
+        c = float(request.form["c"])
 
-    x = np.linspace(-10,10,100)
-    y = a*x**2 + b*x + c
+        x = np.linspace(-10,10,100)
+        y = a*x**2 + b*x + c
 
-    discriminante = b**2 - 4*a*c
+        d = b**2 - 4*a*c
 
-    if discriminante >= 0:
-        x1 = (-b + np.sqrt(discriminante))/(2*a)
-        x2 = (-b - np.sqrt(discriminante))/(2*a)
-        resultado = f"Raíces: {round(x1,2)} , {round(x2,2)}"
-    else:
-        resultado = "No tiene raíces reales"
+        if d >= 0:
+            x1 = (-b + np.sqrt(d))/(2*a)
+            x2 = (-b - np.sqrt(d))/(2*a)
+            resultado = f"Raíces: {round(x1,2)} , {round(x2,2)}"
+        else:
+            resultado = "No tiene raíces reales"
 
-    grafica = generar_grafica(x,y)
+        grafica = generar_grafica(x,y)
 
-    return render_template("index.html", resultado=resultado, grafica=grafica)
+        return render_template("index.html", resultado=resultado, grafica=grafica)
 
+    except:
+        return render_template("index.html", resultado="Error en datos")
 
 # ======================
 # SISTEMA 2x2
 # ======================
 @app.route("/sistema2", methods=["POST"])
 def sistema2():
-    a1 = float(request.form["a1"])
-    b1 = float(request.form["b1"])
-    c1 = float(request.form["c1"])
+    try:
+        A = np.array([
+            [float(request.form["a1"]), float(request.form["b1"])],
+            [float(request.form["a2"]), float(request.form["b2"])]
+        ])
 
-    a2 = float(request.form["a2"])
-    b2 = float(request.form["b2"])
-    c2 = float(request.form["c2"])
+        B = np.array([
+            float(request.form["c1"]),
+            float(request.form["c2"])
+        ])
 
-    A = np.array([[a1,b1],[a2,b2]])
-    B = np.array([c1,c2])
+        sol = np.linalg.solve(A,B)
 
-    sol = np.linalg.solve(A,B)
+        resultado = f"x={round(sol[0],2)}, y={round(sol[1],2)}"
 
-    resultado = f"x = {round(sol[0],2)}, y = {round(sol[1],2)}"
+    except:
+        resultado = "Sistema sin solución o datos incorrectos"
 
     return render_template("index.html", resultado=resultado)
 
@@ -118,25 +130,27 @@ def sistema2():
 # ======================
 @app.route("/sistema3", methods=["POST"])
 def sistema3():
-    A = np.array([
-        [float(request.form["a1"]), float(request.form["b1"]), float(request.form["c1"])],
-        [float(request.form["a2"]), float(request.form["b2"]), float(request.form["c2"])],
-        [float(request.form["a3"]), float(request.form["b3"]), float(request.form["c3"])]
-    ])
+    try:
+        A = np.array([
+            [float(request.form["a1"]), float(request.form["b1"]), float(request.form["c1"])],
+            [float(request.form["a2"]), float(request.form["b2"]), float(request.form["c2"])],
+            [float(request.form["a3"]), float(request.form["b3"]), float(request.form["c3"])]
+        ])
 
-    B = np.array([
-        float(request.form["d1"]),
-        float(request.form["d2"]),
-        float(request.form["d3"])
-    ])
+        B = np.array([
+            float(request.form["d1"]),
+            float(request.form["d2"]),
+            float(request.form["d3"])
+        ])
 
-    sol = np.linalg.solve(A,B)
+        sol = np.linalg.solve(A,B)
 
-    resultado = f"x={round(sol[0],2)}, y={round(sol[1],2)}, z={round(sol[2],2)}"
+        resultado = f"x={round(sol[0],2)}, y={round(sol[1],2)}, z={round(sol[2],2)}"
+
+    except:
+        resultado = "Sistema sin solución o datos incorrectos"
 
     return render_template("index.html", resultado=resultado)
-
-
 # ======================
 # PDF
 # ======================
