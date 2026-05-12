@@ -1,56 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calculadora de Ecuaciones</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            text-align: center;
-        }
-
-        .menu {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-        }
-
-        select {
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        .box {
-            margin-top: 100px;
-            background: rgba(0,0,0,0.4);
-            padding: 30px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-    </style>
+    <title>Calculadora</title>
 </head>
 <body>
 
-<div class="menu">
-    <select onchange="location = this.value;">
-        <option>Selecciona ecuación</option>
-        <option value="/lineal">Lineal</option>
-        <option value="/cuadratica">Cuadrática</option>
-        <option value="/sistema2x2">Sistema 2x2</option>
-        <option value="/sistema3x3">Sistema 3x3</option>
-    </select>
-</div>
+<h1>Calculadora de Ecuaciones</h1>
 
-<div class="box">
-    <h1>Bienvenido</h1>
-    <p>Esta app resuelve:</p>
-    <ul>
-        <li>Ecuaciones lineales (y = mx + b)</li>
-        <li>Ecuaciones cuadráticas (ax² + bx + c)</li>
-    </ul>
-    <p>Selecciona una opción en el menú superior</p>
-</div>
+<p>Desarrollado por Mía Guzmán Mosqueda</p>
+
+<ul>
+    <li><a href="/lineal">Ecuación Lineal</a></li>
+    <li><a href="/cuadratica">Ecuación Cuadrática</a></li>
+    <li><a href="/sistema2x2">Sistema 2x2</a></li>
+    <li><a href="/sistema3x3">Sistema 3x3</a></li>
+</ul>
 
 </body>
 </html>
