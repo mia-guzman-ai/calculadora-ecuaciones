@@ -1,201 +1,64 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Calculadora PRO</title>
-
-<style>
-body{
-    font-family: Arial;
-    margin:0;
-    background: linear-gradient(135deg,#1e3c72,#2a5298);
-    color:white;
-}
-
-header{
-    padding:15px;
-    background:#111;
-    display:flex;
-    justify-content:space-between;
-}
-
-.menu{
-    position:relative;
-}
-
-.menu button{
-    background:#00c6ff;
-    border:none;
-    padding:10px;
-    cursor:pointer;
-}
-
-.menu-content{
-    display:none;
-    position:absolute;
-    background:white;
-    color:black;
-}
-
-.menu-content a{
-    display:block;
-    padding:10px;
-    text-decoration:none;
-}
-
-.menu:hover .menu-content{
-    display:block;
-}
-
-.container{
-    text-align:center;
-    padding:30px;
-}
-
-.card{
-    background:white;
-    color:black;
-    padding:20px;
-    margin:20px auto;
-    width:300px;
-    border-radius:15px;
-}
-
-input{
-    margin:5px;
-    padding:8px;
-    width:80%;
-}
-
-button{
-    margin:5px;
-    padding:10px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-}
-
-.grafica{
-    margin-top:20px;
-}
-
-</style>
+    <title>Calculadora</title>
 </head>
-
 <body>
 
-<header>
-<h2>Calculadora Matemática</h2>
-<div class="menu">
-<button>☰ Ecuaciones</button>
-<div class="menu-content">
-<a href="#lineal">Lineal</a>
-<a href="#cuadratica">Cuadrática</a>
-<a href="#sistema2">Sistema 2x2</a>
-<a href="#sistema3">Sistema 3x3</a>
-</div>
-</div>
-<p>Mía Guzmán Mosqueda</p>
-</header>
-
-<div class="container">
-
-<h1>Bienvenido</h1>
-<p>Aquí puedes resolver ecuaciones lineales, cuadráticas y sistemas.</p>
+<h1>Calculadora de Ecuaciones</h1>
 
 <!-- LINEAL -->
-<div class="card" id="lineal">
-<h3>Ecuación Lineal</h3>
-<p>Representa una recta.</p>
-
+<h2>Lineal</h2>
 <form action="/lineal" method="post">
 <select name="tipo">
-<option value="pendiente">Pendiente y corte</option>
-<option value="dos_puntos">Dos puntos</option>
-</select>
+<option value="pendiente">m y b</option>
+<option value="dos_puntos">2 puntos</option>
+</select><br>
 
-<input name="m" placeholder="Pendiente (m)">
-<input name="b" placeholder="Intercepto (b)">
+<input name="m" placeholder="m">
+<input name="b" placeholder="b"><br>
 
 <input name="x1" placeholder="x1">
 <input name="y1" placeholder="y1">
 <input name="x2" placeholder="x2">
-<input name="y2" placeholder="y2">
+<input name="y2" placeholder="y2"><br>
 
-<button type="submit">Calcular</button>
-<button type="reset">Limpiar</button>
+<button>Calcular</button>
 </form>
-</div>
 
 <!-- CUADRATICA -->
-<div class="card" id="cuadratica">
-<h3>Ecuación Cuadrática</h3>
-<p>Parábola con forma ax²+bx+c.</p>
-
+<h2>Cuadrática</h2>
 <form action="/cuadratica" method="post">
 <input name="a" placeholder="a">
 <input name="b" placeholder="b">
 <input name="c" placeholder="c">
-
-<button type="submit">Calcular</button>
-<button type="reset">Limpiar</button>
+<button>Calcular</button>
 </form>
-</div>
 
 <!-- SISTEMA 2x2 -->
-<div class="card" id="sistema2">
-<h3>Sistema 2x2</h3>
-
+<h2>Sistema 2x2</h2>
 <form action="/sistema2" method="post">
-<input name="a1" placeholder="a1">
-<input name="b1" placeholder="b1">
-<input name="c1" placeholder="c1">
-
-<input name="a2" placeholder="a2">
-<input name="b2" placeholder="b2">
-<input name="c2" placeholder="c2">
-
+<input name="a1"><input name="b1"><input name="c1"><br>
+<input name="a2"><input name="b2"><input name="c2"><br>
 <button>Calcular</button>
 </form>
-</div>
 
 <!-- SISTEMA 3x3 -->
-<div class="card" id="sistema3">
-<h3>Sistema 3x3</h3>
-
+<h2>Sistema 3x3</h2>
 <form action="/sistema3" method="post">
-
-<input name="a1" placeholder="a1">
-<input name="b1" placeholder="b1">
-<input name="c1" placeholder="c1">
-<input name="d1" placeholder="d1">
-
-<input name="a2" placeholder="a2">
-<input name="b2" placeholder="b2">
-<input name="c2" placeholder="c2">
-<input name="d2" placeholder="d2">
-
-<input name="a3" placeholder="a3">
-<input name="b3" placeholder="b3">
-<input name="c3" placeholder="c3">
-<input name="d3" placeholder="d3">
-
+<input name="a1"><input name="b1"><input name="c1"><input name="d1"><br>
+<input name="a2"><input name="b2"><input name="c2"><input name="d2"><br>
+<input name="a3"><input name="b3"><input name="c3"><input name="d3"><br>
 <button>Calcular</button>
 </form>
-</div>
 
-<!-- RESULTADO -->
 {% if resultado %}
-<h2>Resultado: {{resultado}}</h2>
+<h2>{{resultado}}</h2>
 {% endif %}
 
 {% if grafica %}
-<div class="grafica">
 <img src="data:image/png;base64,{{grafica}}">
-</div>
 {% endif %}
-
-</div>
 
 </body>
 </html>
