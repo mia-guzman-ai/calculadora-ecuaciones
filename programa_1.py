@@ -1,126 +1,76 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request
 import numpy as np
-import matplotlib.pyplot as plt
-import os
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Image
-from reportlab.lib.styles import getSampleStyleSheet
 
 app = Flask(__name__)
 
 # ======================
-# PAGINA PRINCIPAL
+# INICIO
 # ======================
 @app.route("/")
-def home():
+def index():
     return render_template("index.html")
+
 
 # ======================
 # ECUACION LINEAL
+# ax + b = 0
 # ======================
 @app.route("/lineal", methods=["GET", "POST"])
 def lineal():
     if request.method == "POST":
-        m = float(request.form["m"])
-        b = float(request.form["b"])
+        a = float(request.form["a"] or 0)
+        b = float(request.form["b"] or 0)
 
-        x = np.linspace(-10, 10, 100)
-        y = m*x + b
+        if a != 0:
+            x = -b / a
+            resultado = f"x = {round(x,2)}"
+        else:
+            resultado = "No tiene solución"
 
-        # gráfica
-        plt.figure()
-        plt.plot(x, y)
-        plt.title("Ecuación Lineal")
-        plt.grid()
-
-        img_path = "static/lineal.png"
-        os.makedirs("static", exist_ok=True)
-        plt.savefig(img_path)
-        plt.close()
-
-        # PDF
-        pdf_path = "resultado_lineal.pdf"
-        doc = SimpleDocTemplate(pdf_path)
-        styles = getSampleStyleSheet()
-
-        content = []
-        content.append(Paragraph(f"Ecuación: y = {m}x + {b}", styles["Normal"]))
-        content.append(Image(img_path))
-
-        doc.build(content)
-
-        return render_template("resultado.html",
-                               ecuacion=f"y = {m}x + {b}",
-                               imagen=img_path,
-                               pdf=pdf_path)
+        return render_template("resultado.html", ecuacion=resultado, imagen=None)
 
     return render_template("lineal.html")
 
+
 # ======================
 # ECUACION CUADRATICA
+# ax^2 + bx + c = 0
 # ======================
 @app.route("/cuadratica", methods=["GET", "POST"])
 def cuadratica():
     if request.method == "POST":
-        a = float(request.form["a"])
-        b = float(request.form["b"])
-        c = float(request.form["c"])
+        a = float(request.form["a"] or 0)
+        b = float(request.form["b"] or 0)
+        c = float(request.form["c"] or 0)
 
-        x = np.linspace(-10, 10, 100)
-        y = a*x**2 + b*x + c
+        d = b**2 - 4*a*c
 
-        plt.figure()
-        plt.plot(x, y)
-        plt.title("Ecuación Cuadrática")
-        plt.grid()
+        if d >= 0 and a != 0:
+            x1 = (-b + d**0.5) / (2*a)
+            x2 = (-b - d**0.5) / (2*a)
+            resultado = f"x1 = {round(x1,2)}, x2 = {round(x2,2)}"
+        else:
+            resultado = "Sin solución real"
 
-        img_path = "static/cuadratica.png"
-        os.makedirs("static", exist_ok=True)
-        plt.savefig(img_path)
-        plt.close()
-
-        pdf_path = "resultado_cuadratica.pdf"
-        doc = SimpleDocTemplate(pdf_path)
-        styles = getSampleStyleSheet()
-
-        content = []
-        content.append(Paragraph(f"Ecuación: {a}x² + {b}x + {c}", styles["Normal"]))
-        content.append(Image(img_path))
-
-        doc.build(content)
-
-        return render_template("resultado.html",
-                               ecuacion=f"{a}x² + {b}x + {c}",
-                               imagen=img_path,
-                               pdf=pdf_path)
+        return render_template("resultado.html", ecuacion=resultado, imagen=None)
 
     return render_template("cuadratica.html")
+
+
 # ======================
-# SISTEMA 2 x 2
+# SISTEMA 2x2
 # ======================
-    
-    @app.route("/sistema2x2", methods=["GET", "POST"])
+@app.route("/sistema2x2", methods=["GET", "POST"])
 def sistema2x2():
     if request.method == "POST":
-        tipo = request.form["tipo"]
 
-        if tipo == "coef":
-            a1 = float(request.form["a1"])
-            b1 = float(request.form["b1"])
-            c1 = float(request.form["c1"])
+        a1 = float(request.form["a1"] or 0)
+        b1 = float(request.form["b1"] or 0)
+        c1 = float(request.form["c1"] or 0)
 
-            a2 = float(request.form["a2"])
-            b2 = float(request.form["b2"])
-            c2 = float(request.form["c2"])
-
-        else:
-            # ecuaciones tipo: 2x + 3y = 5
-            a1 = float(request.form["a1"])
-            b1 = float(request.form["b1"])
-            c1 = float(request.form["c1"])
-
-            a2 = float(request.form["a2"])
-            b2 = float(request.form["b2"])
-            c2 = float(request.form["c2"])
+        a2 = float(request.form["a2"] or 0)
+        b2 = float(request.form["b2"] or 0)
+        c2 = float(request.form["c2"] or 0)
 
         A = np.array([[a1, b1], [a2, b2]])
         B = np.array([c1, c2])
@@ -131,34 +81,32 @@ def sistema2x2():
         except:
             resultado = "Sistema sin solución única"
 
-        return render_template("resultado.html",
-                               ecuacion=resultado,
-                               imagen=None,
-                               pdf=None)
+        return render_template("resultado.html", ecuacion=resultado, imagen=None)
 
     return render_template("sistema2x2.html")
 
+
 # ======================
-# SISTEMA 3 X 3
+# SISTEMA 3x3
 # ======================
 @app.route("/sistema3x3", methods=["GET", "POST"])
 def sistema3x3():
     if request.method == "POST":
 
-        a1 = float(request.form["a1"])
-        b1 = float(request.form["b1"])
-        c1 = float(request.form["c1"])
-        d1 = float(request.form["d1"])
+        a1 = float(request.form["a1"] or 0)
+        b1 = float(request.form["b1"] or 0)
+        c1 = float(request.form["c1"] or 0)
+        d1 = float(request.form["d1"] or 0)
 
-        a2 = float(request.form["a2"])
-        b2 = float(request.form["b2"])
-        c2 = float(request.form["c2"])
-        d2 = float(request.form["d2"])
+        a2 = float(request.form["a2"] or 0)
+        b2 = float(request.form["b2"] or 0)
+        c2 = float(request.form["c2"] or 0)
+        d2 = float(request.form["d2"] or 0)
 
-        a3 = float(request.form["a3"])
-        b3 = float(request.form["b3"])
-        c3 = float(request.form["c3"])
-        d3 = float(request.form["d3"])
+        a3 = float(request.form["a3"] or 0)
+        b3 = float(request.form["b3"] or 0)
+        c3 = float(request.form["c3"] or 0)
+        d3 = float(request.form["d3"] or 0)
 
         A = np.array([
             [a1, b1, c1],
@@ -170,25 +118,14 @@ def sistema3x3():
 
         try:
             sol = np.linalg.solve(A, B)
-            resultado = f"x={round(sol[0],2)}, y={round(sol[1],2)}, z={round(sol[2],2)}"
+            resultado = f"x = {round(sol[0],2)}, y = {round(sol[1],2)}, z = {round(sol[2],2)}"
         except:
             resultado = "Sistema sin solución única"
 
-        return render_template("resultado.html",
-                               ecuacion=resultado,
-                               imagen=None,
-                               pdf=None)
+        return render_template("resultado.html", ecuacion=resultado, imagen=None)
 
     return render_template("sistema3x3.html")
-# ======================
-# DESCARGA PDF
-# ======================
-@app.route("/descargar/<archivo>")
-def descargar(archivo):
-    return send_file(archivo, as_attachment=True)
 
-# ======================
-# MAIN
-# ======================
+
 if __name__ == "__main__":
     app.run(debug=True)
