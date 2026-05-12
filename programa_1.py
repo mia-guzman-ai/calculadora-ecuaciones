@@ -94,7 +94,92 @@ def cuadratica():
                                pdf=pdf_path)
 
     return render_template("cuadratica.html")
+# ======================
+# SISTEMA 2 x 2
+# ======================
+    
+    @app.route("/sistema2x2", methods=["GET", "POST"])
+def sistema2x2():
+    if request.method == "POST":
+        tipo = request.form["tipo"]
 
+        if tipo == "coef":
+            a1 = float(request.form["a1"])
+            b1 = float(request.form["b1"])
+            c1 = float(request.form["c1"])
+
+            a2 = float(request.form["a2"])
+            b2 = float(request.form["b2"])
+            c2 = float(request.form["c2"])
+
+        else:
+            # ecuaciones tipo: 2x + 3y = 5
+            a1 = float(request.form["a1"])
+            b1 = float(request.form["b1"])
+            c1 = float(request.form["c1"])
+
+            a2 = float(request.form["a2"])
+            b2 = float(request.form["b2"])
+            c2 = float(request.form["c2"])
+
+        A = np.array([[a1, b1], [a2, b2]])
+        B = np.array([c1, c2])
+
+        try:
+            sol = np.linalg.solve(A, B)
+            resultado = f"x = {round(sol[0],2)}, y = {round(sol[1],2)}"
+        except:
+            resultado = "Sistema sin solución única"
+
+        return render_template("resultado.html",
+                               ecuacion=resultado,
+                               imagen=None,
+                               pdf=None)
+
+    return render_template("sistema2x2.html")
+
+# ======================
+# SISTEMA 3 X 3
+# ======================
+@app.route("/sistema3x3", methods=["GET", "POST"])
+def sistema3x3():
+    if request.method == "POST":
+
+        a1 = float(request.form["a1"])
+        b1 = float(request.form["b1"])
+        c1 = float(request.form["c1"])
+        d1 = float(request.form["d1"])
+
+        a2 = float(request.form["a2"])
+        b2 = float(request.form["b2"])
+        c2 = float(request.form["c2"])
+        d2 = float(request.form["d2"])
+
+        a3 = float(request.form["a3"])
+        b3 = float(request.form["b3"])
+        c3 = float(request.form["c3"])
+        d3 = float(request.form["d3"])
+
+        A = np.array([
+            [a1, b1, c1],
+            [a2, b2, c2],
+            [a3, b3, c3]
+        ])
+
+        B = np.array([d1, d2, d3])
+
+        try:
+            sol = np.linalg.solve(A, B)
+            resultado = f"x={round(sol[0],2)}, y={round(sol[1],2)}, z={round(sol[2],2)}"
+        except:
+            resultado = "Sistema sin solución única"
+
+        return render_template("resultado.html",
+                               ecuacion=resultado,
+                               imagen=None,
+                               pdf=None)
+
+    return render_template("sistema3x3.html")
 # ======================
 # DESCARGA PDF
 # ======================
