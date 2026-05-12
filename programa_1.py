@@ -7,31 +7,27 @@ app = Flask(__name__)
 def home():
     return send_from_directory(".", "index.html")
 
-
 # ======================
 # LINEAL
 # ======================
 @app.route("/lineal", methods=["POST"])
 def lineal():
     data = request.json
-    tipo = data["tipo"]
 
     x_vals = list(range(-10, 11))
 
     try:
-        if tipo == "punto_pendiente":
-            m = data["m"]
-            x1 = data["x1"]
-            y1 = data["y1"]
+        m = data["m"]
+        b = data["b"]
 
-            b = y1 - m*x1
-            y_vals = [m*x + b for x in x_vals]
-            resultado = f"y = {m:.2f}x + {b:.2f}"
+        y_vals = [m*x + b for x in x_vals]
+        resultado = f"La solución es una recta con pendiente {m} y corte en {b}."
 
-        else:
-            return jsonify({"resultado": "Tipo inválido"})
-
-        return jsonify({"x": x_vals, "y": y_vals, "resultado": resultado})
+        return jsonify({
+            "x": x_vals,
+            "y": y_vals,
+            "resultado": resultado
+        })
 
     except:
         return jsonify({"resultado": "Error en datos"})
@@ -43,16 +39,12 @@ def lineal():
 @app.route("/cuadratica", methods=["POST"])
 def cuadratica():
     data = request.json
-
     x_vals = list(range(-10, 11))
 
     try:
         a = data["a"]
         b = data["b"]
         c = data["c"]
-
-        if a == 0:
-            return jsonify({"resultado": "No es cuadrática"})
 
         y_vals = [a*x**2 + b*x + c for x in x_vals]
 
@@ -61,12 +53,12 @@ def cuadratica():
         if d > 0:
             r1 = (-b + math.sqrt(d))/(2*a)
             r2 = (-b - math.sqrt(d))/(2*a)
-            res = f"Raíces: {r1:.2f}, {r2:.2f}"
+            res = f"La parábola corta al eje X en dos puntos: {r1:.2f} y {r2:.2f}"
         elif d == 0:
             r = -b/(2*a)
-            res = f"Raíz: {r:.2f}"
+            res = f"La parábola toca el eje X en un punto: {r:.2f}"
         else:
-            res = "No reales"
+            res = "La parábola no corta el eje X (raíces complejas)"
 
         return jsonify({"x": x_vals, "y": y_vals, "resultado": res})
 
@@ -87,7 +79,7 @@ def sistema():
     det = a*e - b*d
 
     if det == 0:
-        return jsonify({"resultado": "Sin solución"})
+        return jsonify({"resultado": "El sistema no tiene solución única."})
 
     x = (c*e - b*f)/det
     y = (a*f - c*d)/det
@@ -97,12 +89,52 @@ def sistema():
     y2 = [(-d*x + f)/e for x in x_vals]
 
     return jsonify({
-        "resultado": f"x={x:.2f}, y={y:.2f}",
+        "resultado": f"La solución del sistema es el punto de intersección: x={x:.2f}, y={y:.2f}",
         "x": x_vals,
         "y1": y1,
         "y2": y2
     })
 
+
+# ======================
+# SISTEMA 3x3 (GAUSS)
+# ======================
+@app.route("/sistema3", methods=["POST"])
+def sistema3():
+    data = request.json
+
+    try:
+        a1,b1,c1,d1 = data["a1"],data["b1"],data["c1"],data["d1"]
+        a2,b2,c2,d2 = data["a2"],data["b2"],data["c2"],data["d2"]
+        a3,b3,c3,d3 = data["a3"],data["b3"],data["c3"],data["d3"]
+
+        # Eliminación de Gauss básica
+        m1 = a2/a1
+        m2 = a3/a1
+
+        b2 -= m1*b1
+        c2 -= m1*c1
+        d2 -= m1*d1
+
+        b3 -= m2*b1
+        c3 -= m2*c1
+        d3 -= m2*d1
+
+        m3 = b3/b2
+        c3 -= m3*c2
+        d3 -= m3*d2
+
+        z = d3/c3
+        y = (d2 - c2*z)/b2
+        x = (d1 - b1*y - c1*z)/a1
+
+        return jsonify({
+            "resultado": f"Solución única: x={x:.2f}, y={y:.2f}, z={z:.2f}"
+        })
+
+    except:
+        return jsonify({"resultado": "Error en el sistema"})
+        
 
 if __name__ == "__main__":
     import os
