@@ -1,153 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Calculadora</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<title>Calculadora Matemática</title>
+<style>
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #444;
+}
+
+.card {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #f7f7f7;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input {
+    width: 95%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+small {
+    color: #666;
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    background: #667eea;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #5a67d8;
+}
+
+#grafica {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#grafica img {
+    width: 70%;   /* 🔥 más pequeña */
+    border-radius: 10px;
+}
+
+</style>
 </head>
+
 <body>
 
-<h2>ECUACIÓN LINEAL</h2>
+<div class="container">
 
-<select id="tipoLineal">
-<option value="general">ax + b</option>
-<option value="dos_puntos">Dos puntos</option>
-<option value="punto_pendiente">Punto pendiente</option>
-</select>
+<h1>📊 Calculadora Matemática</h1>
 
-<div id="inputsLineal"></div>
-<button onclick="resolverLineal()">Resolver</button>
-<p id="res1"></p>
-<canvas id="graf1"></canvas>
+<div class="card">
 
+<h3>📈 Ecuación Lineal</h3>
 
-<h2>CUADRÁTICA</h2>
+<label>Valor de m (pendiente)</label>
+<input id="m" placeholder="Ej: 2">
+<small>Indica qué tan inclinada es la recta</small>
 
-<select id="tipoCuad">
-<option value="general">ax² + bx + c</option>
-<option value="tres_puntos">Tres puntos</option>
-</select>
+<label>Valor de b (intersección)</label>
+<input id="b" placeholder="Ej: 3">
+<small>Donde la recta corta el eje Y</small>
 
-<div id="inputsCuad"></div>
-<button onclick="resolverCuad()">Resolver</button>
-<p id="res2"></p>
-<canvas id="graf2"></canvas>
+<button onclick="calcular()">Calcular</button>
 
+</div>
 
-<h2>SISTEMA</h2>
-<input id="a"><input id="b"><input id="c"><br>
-<input id="d"><input id="e"><input id="f"><br>
-<button onclick="resolverSistema()">Resolver</button>
-<p id="res3"></p>
-<canvas id="graf3"></canvas>
+<div id="grafica"></div>
 
+</div>
 
 <script>
-let chart1, chart2, chart3
 
-// ===== INPUTS DINAMICOS =====
-tipoLineal.onchange = () => {
-    if(tipoLineal.value=="general")
-        inputsLineal.innerHTML=`<input id="aL"><input id="bL">`
-    if(tipoLineal.value=="dos_puntos")
-        inputsLineal.innerHTML=`<input id="x1"><input id="y1"><input id="x2"><input id="y2">`
-    if(tipoLineal.value=="punto_pendiente")
-        inputsLineal.innerHTML=`<input id="m"><input id="x1"><input id="y1">`
-}
-tipoLineal.onchange()
+function calcular() {
 
-tipoCuad.onchange = () => {
-    if(tipoCuad.value=="general")
-        inputsCuad.innerHTML=`<input id="ca"><input id="cb"><input id="cc">`
-    if(tipoCuad.value=="tres_puntos")
-        inputsCuad.innerHTML=`<input id="x1"><input id="y1"><input id="x2"><input id="y2"><input id="x3"><input id="y3">`
-}
-tipoCuad.onchange()
+    let m = document.getElementById("m").value;
+    let b = document.getElementById("b").value;
 
-
-// ===== FUNCIONES =====
-function resolverLineal(){
-    let data={tipo:tipoLineal.value}
-
-    if(data.tipo=="general"){
-        data.a=parseFloat(aL.value)
-        data.b=parseFloat(bL.value)
-    }
-    if(data.tipo=="dos_puntos"){
-        data.x1=parseFloat(x1.value)
-        data.y1=parseFloat(y1.value)
-        data.x2=parseFloat(x2.value)
-        data.y2=parseFloat(y2.value)
-    }
-    if(data.tipo=="punto_pendiente"){
-        data.m=parseFloat(m.value)
-        data.x1=parseFloat(x1.value)
-        data.y1=parseFloat(y1.value)
-    }
-
-    fetch("/lineal",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
-    .then(r=>r.json())
-    .then(d=>{
-        res1.innerText=d.resultado
-        graficar(d.x,d.y,"graf1",(c)=>chart1=c,chart1)
+    fetch("/lineal", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            tipo: "pendiente",
+            m: parseFloat(m),
+            b: parseFloat(b)
+        })
     })
+    .then(res => res.json())
+    .then(data => {
+
+        document.getElementById("grafica").innerHTML =
+            `<img src="data:image/png;base64,${data.grafica}">`;
+
+    });
+
 }
 
-function resolverCuad(){
-    let data={tipo:tipoCuad.value}
-
-    if(data.tipo=="general"){
-        data.a=parseFloat(ca.value)
-        data.b=parseFloat(cb.value)
-        data.c=parseFloat(cc.value)
-    }
-
-    fetch("/cuadratica",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
-    .then(r=>r.json())
-    .then(d=>{
-        res2.innerText=d.resultado
-        graficar(d.x,d.y,"graf2",(c)=>chart2=c,chart2)
-    })
-}
-
-function resolverSistema(){
-    let data={
-        a:parseFloat(a.value),
-        b:parseFloat(b.value),
-        c:parseFloat(c.value),
-        d:parseFloat(d.value),
-        e:parseFloat(e.value),
-        f:parseFloat(f.value)
-    }
-
-    fetch("/sistema",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
-    .then(r=>r.json())
-    .then(d=>{
-        res3.innerText=d.resultado
-        graficarSistema(d.x,d.y1,d.y2)
-    })
-}
-
-
-// ===== GRAFICAS =====
-function graficar(x,y,id,set,chart){
-    if(chart) chart.destroy()
-    const ctx=document.getElementById(id)
-    set(new Chart(ctx,{type:"line",data:{labels:x,datasets:[{data:y}]}}))
-}
-
-function graficarSistema(x,y1,y2){
-    if(chart3) chart3.destroy()
-    chart3=new Chart(graf3,{
-        type:"line",
-        data:{
-            labels:x,
-            datasets:[
-                {label:"Recta 1",data:y1},
-                {label:"Recta 2",data:y2}
-            ]
-        }
-    })
-}
 </script>
 
 </body>
