@@ -1,5 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resultado</title>
+</head>
+<body>
+
 <h2>Resultado</h2>
 
 <p>{{ ecuacion }}</p>
 
+{% if imagen %}
+    <img src="/{{ imagen }}" width="400">
+{% endif %}
+
+<br><br>
+
 <a href="/">Volver al inicio</a>
+
+</body>
+</html>
