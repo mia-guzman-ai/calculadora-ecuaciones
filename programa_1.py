@@ -295,10 +295,10 @@ def lineal():
 
             if tipo == "dos_puntos":
 
-                x1 = float(request.form.get("x"))
-                y1 = float(request.form.get("y"))
-                x2 = float(request.form.get("x"))
-                y2 = float(request.form.get("y"))
+                x1 = float(request.form.get("x1"))
+                y1 = float(request.form.get("y1"))
+                x2 = float(request.form.get("x2"))
+                y2 = float(request.form.get("y2"))
 
                 if x1 == x2:
                     raise ValueError
@@ -478,13 +478,13 @@ def sistema2x2():
 
         try:
 
-            a1=float(request.form.get("a"))
-            b1=float(request.form.get("b"))
-            c1=float(request.form.get("c"))
+            a1=float(request.form.get("a1"))
+            b1=float(request.form.get("b1"))
+            c1=float(request.form.get("c1"))
 
-            a2=float(request.form.get("a"))
-            b2=float(request.form.get("b"))
-            c2=float(request.form.get("c"))
+            a2=float(request.form.get("a2"))
+            b2=float(request.form.get("b2"))
+            c2=float(request.form.get("c2"))
 
             A=np.array([[a1,b1],[a2,b2]])
             B=np.array([c1,c2])
@@ -578,15 +578,15 @@ def sistema3x3():
         try:
 
             A=np.array([
-                [float(request.form.get("a")),float(request.form.get("b")),float(request.form.get("c"))],
-                [float(request.form.get("a")),float(request.form.get("b")),float(request.form.get("c"))],
-                [float(request.form.get("a")),float(request.form.get("b")),float(request.form.get("c"))]
+                [float(request.form.get("a1")),float(request.form.get("b1")),float(request.form.get("c1"))],
+                [float(request.form.get("a2")),float(request.form.get("b2")),float(request.form.get("c2"))],
+                [float(request.form.get("a3")),float(request.form.get("b3")),float(request.form.get("c3"))]
             ])
 
             B=np.array([
-                float(request.form.get("d")),
-                float(request.form.get("d")),
-                float(request.form.get("d"))
+                float(request.form.get("d1")),
+                float(request.form.get("d2")),
+                float(request.form.get("d3"))
             ])
 
             x=np.linalg.solve(A,B)
