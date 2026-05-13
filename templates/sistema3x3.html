@@ -1,17 +1,75 @@
-<h2>Sistema 3x3</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema 3x3</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-<form method="POST">
+<body>
 
-<input name="a11" placeholder="a11"><input name="a12"><input name="a13">
-<input name="a21" placeholder="a21"><input name="a22"><input name="a23">
-<input name="a31" placeholder="a31"><input name="a32"><input name="a33">
+<div class="sidebar">
 
-<input name="b1" placeholder="b1">
-<input name="b2" placeholder="b2">
-<input name="b3" placeholder="b3">
+    <h2>Math App</h2>
 
-<button type="submit">Calcular</button>
-</form>
+    <a href="/">🏠 Inicio</a>
+    <a href="/lineal">📈 Lineal</a>
+    <a href="/cuadratica">📉 Cuadrática</a>
+    <a href="/sistema2x2">🔢 2x2</a>
+    <a href="/sistema3x3">📊 3x3</a>
 
-<a href="/">Volver</a>
+</div>
 
+<div class="main">
+
+    <div class="card">
+
+        <h2>Sistema de Ecuaciones 3x3</h2>
+
+        <form method="POST">
+
+            <input type="number" step="any" name="a11" placeholder="a11" required>
+            <input type="number" step="any" name="a12" placeholder="a12" required>
+            <input type="number" step="any" name="a13" placeholder="a13" required>
+
+            <input type="number" step="any" name="a21" placeholder="a21" required>
+            <input type="number" step="any" name="a22" placeholder="a22" required>
+            <input type="number" step="any" name="a23" placeholder="a23" required>
+
+            <input type="number" step="any" name="a31" placeholder="a31" required>
+            <input type="number" step="any" name="a32" placeholder="a32" required>
+            <input type="number" step="any" name="a33" placeholder="a33" required>
+
+            <input type="number" step="any" name="b1" placeholder="b1" required>
+            <input type="number" step="any" name="b2" placeholder="b2" required>
+            <input type="number" step="any" name="b3" placeholder="b3" required>
+
+            <div class="botones">
+
+                <button type="submit">Calcular</button>
+
+                <button type="reset">Limpiar</button>
+
+            </div>
+
+        </form>
+
+        <a class="btn-volver" href="/">Volver</a>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Interpretación</h3>
+
+        <p>
+            Un sistema 3x3 representa la intersección
+            de tres planos en el espacio.
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>
