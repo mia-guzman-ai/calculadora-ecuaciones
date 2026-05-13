@@ -1,4 +1,5 @@
 flask
-gunicorn
 numpy
 matplotlib
+fpdf2
+gunicorn
