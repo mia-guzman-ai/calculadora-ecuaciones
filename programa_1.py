@@ -1,104 +1,232 @@
 from flask import Flask, render_template_string, request
 import numpy as np
+
 import matplotlib
 matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
-import io, base64
+import io
+import base64
 
 app = Flask(__name__)
 
-# ================= IMAGEN =================
+# ================= FUNCION IMAGEN =================
 
 def convertir_imagen(fig):
     img = io.BytesIO()
-    fig.savefig(img, format='png', bbox_inches='tight')
+    fig.savefig(img, format='png', bbox_inches='tight', facecolor=fig.get_facecolor())
     img.seek(0)
     return base64.b64encode(img.getvalue()).decode()
 
-# ================= ESTILO =================
+# ================= SEGURIDAD INPUTS =================
 
-ESTILO = """<style>
+def fget(key, default="0"):
+    val = request.form.get(key)
+    if val is None or val == "":
+        return default
+    return val
+
+# ================= ESTILO (NO TOCADO) =================
+
+ESTILO = """
+
+<style>
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
-
-body{
-background:radial-gradient(circle,#1e3a8a,#020617);
-color:white;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
 }
 
+body{
+    background:
+    radial-gradient(circle at top left,#1e3a8a,#020617 70%);
+    color:white;
+    overflow-x:hidden;
+}
+
+/* ===== SIDEBAR ===== */
+
 .sidebar{
-position:fixed;width:270px;height:100vh;
-background:rgba(15,23,42,0.95);
-padding:25px;
+    position:fixed;
+    width:270px;
+    height:100vh;
+    background:rgba(15,23,42,0.95);
+    backdrop-filter:blur(15px);
+    padding:25px;
+    border-right:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 0 30px rgba(0,0,0,0.5);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.logo h1{
+    color:#60a5fa;
+    font-size:32px;
+    font-weight:700;
+}
+
+.logo p{
+    color:#94a3b8;
+    margin-top:5px;
+    font-size:14px;
 }
 
 .sidebar a{
-display:block;padding:14px;margin:10px 0;
-background:rgba(255,255,255,0.05);
-border-radius:12px;color:white;text-decoration:none;
+    display:block;
+    padding:16px;
+    margin-bottom:12px;
+    border-radius:14px;
+    text-decoration:none;
+    color:white;
+    font-weight:500;
+    transition:0.3s;
+    background:rgba(255,255,255,0.03);
 }
 
-.main{margin-left:290px;padding:30px;}
+.sidebar a:hover{
+    transform:translateX(6px);
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    box-shadow:0 0 20px rgba(59,130,246,0.4);
+}
+
+/* ===== MAIN ===== */
+
+.main{
+    margin-left:290px;
+    padding:40px;
+}
 
 .card{
-background:rgba(255,255,255,0.07);
-padding:25px;border-radius:20px;margin-bottom:20px;
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:25px;
+    padding:35px;
+    margin-bottom:35px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.35);
 }
 
-input,select{
-width:100%;padding:12px;margin-top:10px;
-border-radius:10px;border:none;
+h1{
+    font-size:42px;
+    margin-bottom:15px;
+    color:#dbeafe;
+}
+
+h2{
+    color:#93c5fd;
+    margin-bottom:18px;
+}
+
+p{
+    color:#dbeafe;
+    line-height:1.8;
+}
+
+input, select{
+    width:100%;
+    padding:16px;
+    margin-top:14px;
+    border:none;
+    border-radius:14px;
+    background:#e0f2fe;
+    color:#0f172a;
 }
 
 button{
-padding:12px;border:none;border-radius:12px;
-background:#2563eb;color:white;font-weight:bold;
-cursor:pointer;margin-top:10px;
+    padding:15px;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:15px;
 }
 
-.grafica img{width:100%;border-radius:12px;}
+.grafica img{
+    width:100%;
+    border-radius:15px;
+}
 
-.resultado{font-size:22px;color:#7dd3fc;font-weight:bold;}
-</style>"""
+.resultado{
+    font-size:28px;
+    color:#7dd3fc;
+    font-weight:700;
+}
+
+</style>
+
+"""
 
 # ================= MENU =================
 
 MENU = """
+
 <div class="sidebar">
-<h2>Math App</h2>
-<a href="/">Inicio</a>
-<a href="/lineal">Lineal</a>
-<a href="/cuadratica">Cuadrática</a>
-<a href="/sistema2x2">Sistema 2x2</a>
-<a href="/sistema3x3">Sistema 3x3</a>
+
+    <div class="logo">
+        <h1>Math App</h1>
+        <p>Matemática Interactiva</p>
+    </div>
+
+    <a href="/">🏠 Inicio</a>
+    <a href="/lineal">📈 Ecuación Lineal</a>
+    <a href="/cuadratica">📉 Ecuación Cuadrática</a>
+    <a href="/sistema2x2">🔢 Sistema 2x2</a>
+    <a href="/sistema3x3">📊 Sistema 3x3</a>
+
 </div>
+
 """
 
 # ================= GRAFICA =================
 
 def grafica_base():
-    fig, ax = plt.subplots(figsize=(7,5))
-    ax.set_facecolor("white")
-    ax.grid(True)
+    fig, ax = plt.subplots(figsize=(8,5))
+
+    fig.patch.set_facecolor('#ffffff')
+    ax.set_facecolor('#ffffff')
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
     ax.axhline(0,color="black")
     ax.axvline(0,color="black")
+
+    ax.grid(True)
+
+    ax.set_xlim(-10,10)
+    ax.set_ylim(-10,10)
+
     return fig, ax
 
 # ================= HOME =================
 
 @app.route("/")
-def home():
+def inicio():
     return render_template_string(f"""
-<html><head>{ESTILO}</head>
+<html>
+<head>{ESTILO}</head>
 <body>{MENU}
+
 <div class="main">
+
 <div class="card">
-<h1>Math App</h1>
-<p>Plataforma matemática interactiva mejorada</p>
+<h1>Bienvenido 👋</h1>
+<p>Plataforma matemática interactiva funcionando correctamente.</p>
 </div>
+
 </div>
-</body></html>
+
+</body>
+</html>
 """)
 
 # ================= LINEAL =================
@@ -108,66 +236,72 @@ def lineal():
 
     tipo = request.form.get("tipo","pendiente")
 
-    x1=x2=y1=y2=m=b=x=y=None
+    resultado = ""
+    img = ""
 
-    img=""
+    if request.method == "POST":
 
-    if request.method=="POST":
+        try:
 
-        if tipo=="dos_puntos":
-            x1=float(request.form["x1"])
-            y1=float(request.form["y1"])
-            x2=float(request.form["x2"])
-            y2=float(request.form["y2"])
+            if tipo == "dos_puntos":
 
-            m=(y2-y1)/(x2-x1)
-            b=y1-m*x1
+                x1 = float(fget("x1"))
+                y1 = float(fget("y1"))
+                x2 = float(fget("x2","1"))
+                y2 = float(fget("y2","1"))
 
-        else:
-            m=float(request.form["m"])
-            b=float(request.form["b"])
+                if x1 == x2:
+                    raise ValueError("x1=x2")
 
-        x=-b/m
+                m = (y2 - y1) / (x2 - x1)
+                b = y1 - m * x1
 
-        fig,ax=grafica_base()
-        xs=np.linspace(-10,10,100)
-        ax.plot(xs,m*xs+b)
-        ax.scatter([x],[0],color="red")
+            else:
 
-        img=convertir_imagen(fig)
+                m = float(fget("m"))
+                b = float(fget("b"))
+
+            x = -b/m if m != 0 else 0
+            resultado = f"x = {x:.2f}"
+
+            fig, ax = grafica_base()
+            xs = np.linspace(-10,10,200)
+            ax.plot(xs, m*xs + b)
+            ax.scatter([x],[0],color="red")
+
+            img = convertir_imagen(fig)
+
+        except:
+            resultado = "Datos inválidos"
+
+    html_inputs = """
+    <input name="m" placeholder="m">
+    <input name="b" placeholder="b">
+    """ if tipo=="pendiente" else """
+    <input name="x1">
+    <input name="y1">
+    <input name="x2">
+    <input name="y2">
+    """
 
     return render_template_string(f"""
-<html><head>{ESTILO}</head>
+<html>
+<head>{ESTILO}</head>
 <body>{MENU}
+
 <div class="main">
 
 <div class="card">
-<h2>Lineal</h2>
+<h2>Ecuación Lineal</h2>
 
 <form method="POST">
 
 <select name="tipo" onchange="this.form.submit()">
-<option value="pendiente" {"selected" if tipo=="pendiente" else ""}>Pendiente + Intersección</option>
+<option value="pendiente" {"selected" if tipo=="pendiente" else ""}>Pendiente + b</option>
 <option value="dos_puntos" {"selected" if tipo=="dos_puntos" else ""}>Dos puntos</option>
 </select>
 
-{""
-if tipo=="pendiente" else
-'''
-<input name="x1" placeholder="x1">
-<input name="y1" placeholder="y1">
-<input name="x2" placeholder="x2">
-<input name="y2" placeholder="y2">
-'''
-}
-
-{""
-if tipo!="pendiente" else
-'''
-<input name="m" placeholder="pendiente m">
-<input name="b" placeholder="intersección b">
-'''
-}
+{html_inputs}
 
 <button type="submit">Calcular</button>
 <button type="reset">Limpiar</button>
@@ -177,12 +311,14 @@ if tipo!="pendiente" else
 </div>
 
 <div class="card">
-<div class="resultado">{x if x else ""}</div>
+<div class="resultado">{resultado}</div>
 <div class="grafica"><img src="data:image/png;base64,{img}"></div>
 </div>
 
 </div>
-</body></html>
+
+</body>
+</html>
 """)
 
 # ================= CUADRATICA =================
@@ -191,48 +327,63 @@ if tipo!="pendiente" else
 def cuadratica():
 
     img=""
-    x_sol=None
+    sol=""
 
     if request.method=="POST":
 
-        a=float(request.form["a"])
-        b=float(request.form["b"])
-        c=float(request.form["c"])
+        try:
 
-        disc=b**2-4*a*c
-        x_sol=(-b+np.sqrt(disc))/(2*a)
+            a=float(fget("a"))
+            b=float(fget("b"))
+            c=float(fget("c"))
 
-        fig,ax=grafica_base()
-        xs=np.linspace(-10,10,200)
-        ax.plot(xs,a*xs**2+b*xs+c)
-        img=convertir_imagen(fig)
+            disc=b**2-4*a*c
+
+            if disc < 0:
+                sol="Sin raíces reales"
+            else:
+                x1=(-b+np.sqrt(disc))/(2*a)
+                x2=(-b-np.sqrt(disc))/(2*a)
+                sol=f"x1={x1:.2f}, x2={x2:.2f}"
+
+            fig,ax=grafica_base()
+            xs=np.linspace(-10,10,300)
+            ax.plot(xs,a*xs**2+b*xs+c)
+
+            img=convertir_imagen(fig)
+
+        except:
+            sol="Datos inválidos"
 
     return render_template_string(f"""
-<html><head>{ESTILO}</head>
+<html>
+<head>{ESTILO}</head>
 <body>{MENU}
+
 <div class="main">
 
 <div class="card">
 <h2>Cuadrática</h2>
+
 <form method="POST">
-
-<input name="a" placeholder="a">
-<input name="b" placeholder="b">
-<input name="c" placeholder="c">
-
+<input name="a">
+<input name="b">
+<input name="c">
 <button>Calcular</button>
 <button type="reset">Limpiar</button>
-
 </form>
+
 </div>
 
 <div class="card">
-<div class="resultado">{x_sol if x_sol else ""}</div>
+<div class="resultado">{sol}</div>
 <div class="grafica"><img src="data:image/png;base64,{img}"></div>
 </div>
 
 </div>
-</body></html>
+
+</body>
+</html>
 """)
 
 # ================= SISTEMA 2X2 =================
@@ -245,41 +396,51 @@ def sistema2x2():
 
     if request.method=="POST":
 
-        a1,b1,c1=float(request.form["a1"]),float(request.form["b1"]),float(request.form["c1"])
-        a2,b2,c2=float(request.form["a2"]),float(request.form["b2"]),float(request.form["c2"])
+        try:
 
-        A=np.array([[a1,b1],[a2,b2]])
-        B=np.array([c1,c2])
+            a1=float(fget("a1"))
+            b1=float(fget("b1"))
+            c1=float(fget("c1"))
 
-        x,y=np.linalg.solve(A,B)
-        sol=f"x={x:.2f}, y={y:.2f}"
+            a2=float(fget("a2"))
+            b2=float(fget("b2"))
+            c2=float(fget("c2"))
 
-        fig,ax=grafica_base()
+            A=np.array([[a1,b1],[a2,b2]])
+            B=np.array([c1,c2])
 
-        xs=np.linspace(-10,10,100)
-        ax.plot(xs,(c1-a1*xs)/b1)
-        ax.plot(xs,(c2-a2*xs)/b2)
-        ax.scatter([x],[y],color="red")
+            x,y=np.linalg.solve(A,B)
+            sol=f"x={x:.2f}, y={y:.2f}"
 
-        img=convertir_imagen(fig)
+            fig,ax=grafica_base()
+            xs=np.linspace(-10,10,200)
+            ax.plot(xs,(c1-a1*xs)/b1)
+            ax.plot(xs,(c2-a2*xs)/b2)
+            ax.scatter([x],[y],color="red")
+
+            img=convertir_imagen(fig)
+
+        except:
+            sol="Sistema inválido"
 
     return render_template_string(f"""
-<html><head>{ESTILO}</head>
+<html>
+<head>{ESTILO}</head>
 <body>{MENU}
+
 <div class="main">
 
 <div class="card">
 <h2>Sistema 2x2</h2>
 
 <form method="POST">
-
 <input name="a1"><input name="b1"><input name="c1">
 <input name="a2"><input name="b2"><input name="c2">
 
 <button>Resolver</button>
 <button type="reset">Limpiar</button>
-
 </form>
+
 </div>
 
 <div class="card">
@@ -288,7 +449,9 @@ def sistema2x2():
 </div>
 
 </div>
-</body></html>
+
+</body>
+</html>
 """)
 
 # ================= SISTEMA 3X3 =================
@@ -300,38 +463,44 @@ def sistema3x3():
 
     if request.method=="POST":
 
-        A=np.array([
-            [float(request.form["a1"]),float(request.form["b1"]),float(request.form["c1"])],
-            [float(request.form["a2"]),float(request.form["b2"]),float(request.form["c2"])],
-            [float(request.form["a3"]),float(request.form["b3"]),float(request.form["c3"])]
-        ])
+        try:
 
-        B=np.array([
-            float(request.form["d1"]),
-            float(request.form["d2"]),
-            float(request.form["d3"])
-        ])
+            A=np.array([
+                [float(fget("a1")),float(fget("b1")),float(fget("c1"))],
+                [float(fget("a2")),float(fget("b2")),float(fget("c2"))],
+                [float(fget("a3")),float(fget("b3")),float(fget("c3"))]
+            ])
 
-        x=np.linalg.solve(A,B)
-        sol=f"x={x[0]:.2f}, y={x[1]:.2f}, z={x[2]:.2f}"
+            B=np.array([
+                float(fget("d1")),
+                float(fget("d2")),
+                float(fget("d3"))
+            ])
+
+            x=np.linalg.solve(A,B)
+
+            sol=f"x={x[0]:.2f}, y={x[1]:.2f}, z={x[2]:.2f}"
+
+        except:
+            sol="Sistema inválido"
 
     return render_template_string(f"""
-<html><head>{ESTILO}</head>
+<html>
+<head>{ESTILO}</head>
 <body>{MENU}
+
 <div class="main">
 
 <div class="card">
 <h2>Sistema 3x3</h2>
 
 <form method="POST">
-
 <input name="a1"><input name="b1"><input name="c1"><input name="d1">
 <input name="a2"><input name="b2"><input name="c2"><input name="d2">
 <input name="a3"><input name="b3"><input name="c3"><input name="d3">
 
 <button>Resolver</button>
 <button type="reset">Limpiar</button>
-
 </form>
 
 </div>
@@ -341,10 +510,12 @@ def sistema3x3():
 </div>
 
 </div>
-</body></html>
+
+</body>
+</html>
 """)
 
 # ================= RUN =================
 
-if __name__=="__main__":
-    app.run(host="0.0.0.0",port=5000)
+if __name__ == "__main__":
+    app.run(debug=True)
