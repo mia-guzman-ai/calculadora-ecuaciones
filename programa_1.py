@@ -255,6 +255,7 @@ genera gráficas e interpreta resultados.
 @app.route("/lineal", methods=["GET","POST"])
 def lineal():
 
+
     tipo = request.form.get("tipo","pendiente")
 
     resultado = ""
@@ -318,6 +319,8 @@ def lineal():
 <div class="card">
 
 <h2>Ecuación Lineal</h2>
+
+<h2>Las ecuaciones lineales son igualdades matemáticas de primer grado donde las incógnitas tienen exponente 1, representando una línea recta al graficarse.</h2>
 
 <form method="POST">
 
@@ -389,6 +392,8 @@ def cuadratica():
 
 <div class="card">
 <h2>Cuadrática</h2>
+
+<h2>Una ecuación cuadrática es una ecuación algebraica de segundo grado, es decir, aquella en la que la incógnita (generalmente x) aparece elevada al cuadrado como máximo.</h2>
 
 <form method="POST">
 <input name="a">
@@ -462,6 +467,10 @@ def sistema2x2():
 <div class="card">
 <h2>Sistema 2x2</h2>
 
+<h2>Un sistema de ecuaciones 2×2 es un conjunto de dos ecuaciones lineales con dos incógnitas, generalmente x y y, que se deben resolver al mismo tiempo.</h2>
+
+<h2>a1​x + b1​y = c1​ y a2​x + b2​y = c2​​</h2>
+
 <form method="POST">
 
 <input name="a1"><input name="b1"><input name="c1">
@@ -524,6 +533,10 @@ def sistema3x3():
 
 <div class="card">
 <h2>Sistema 3x3</h2>
+
+<h2>Un sistema de ecuaciones 3×3 es un conjunto de tres ecuaciones lineales con tres incógnitas, normalmente x, y y z, que se resuelven simultáneamente.</h2>
+
+<h2>​a1​x + b1​y + c1​z = d1, ​a2​x + b2​y + c2​z = d2, ​a3​x + b3​y + c3​z = d3​​</h2>
 
 <form method="POST">
 
