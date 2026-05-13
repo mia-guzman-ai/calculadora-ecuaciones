@@ -14,6 +14,9 @@ def index():
     return render_template("resultado.html")
     return render_template("sistema2x2.html")
     return render_template("sistema3x3.html")
+    return render_template("cuadratica.html")
+    return render_template("lineal.html")
+    
 
 # ======================
 # ECUACION LINEAL
