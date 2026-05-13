@@ -12,10 +12,25 @@ app = Flask(__name__)
 
 # ================= FUNCION IMAGEN =================
 
+CHART_COLORS = {
+    'bg': '#0f172a',
+    'surface': '#1e293b',
+    'grid': '#334155',
+    'axis': '#64748b',
+    'text': '#e2e8f0',
+    'accent1': '#60a5fa',
+    'accent2': '#a78bfa',
+    'accent3': '#34d399',
+    'highlight': '#f472b6',
+    'warn': '#fbbf24',
+}
+
 def convertir_imagen(fig):
     img = io.BytesIO()
-    fig.savefig(img, format='png', bbox_inches='tight', facecolor=fig.get_facecolor())
+    fig.savefig(img, format='png', dpi=200, bbox_inches='tight',
+                facecolor=fig.get_facecolor(), edgecolor='none')
     img.seek(0)
+    plt.close(fig)
     return base64.b64encode(img.getvalue()).decode()
 
 # ================= SEGURIDAD INPUTS =================
@@ -182,22 +197,30 @@ MENU = """
 
 # ================= GRAFICA =================
 
-def grafica_base():
-    fig, ax = plt.subplots(figsize=(8,5))
+def grafica_base(title="", xlabel="x", ylabel="y"):
+    fig, ax = plt.subplots(figsize=(9, 5.5))
 
-    fig.patch.set_facecolor('#ffffff')
-    ax.set_facecolor('#ffffff')
+    fig.patch.set_facecolor(CHART_COLORS['bg'])
+    ax.set_facecolor(CHART_COLORS['surface'])
 
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
+    for spine in ax.spines.values():
+        spine.set_color(CHART_COLORS['grid'])
+        spine.set_linewidth(0.8)
 
-    ax.axhline(0,color="black")
-    ax.axvline(0,color="black")
+    ax.axhline(0, color=CHART_COLORS['axis'], linewidth=1.0, alpha=0.6)
+    ax.axvline(0, color=CHART_COLORS['axis'], linewidth=1.0, alpha=0.6)
 
-    ax.grid(True)
+    ax.grid(True, color=CHART_COLORS['grid'], linewidth=0.4, alpha=0.5, linestyle='--')
 
-    ax.set_xlim(-10,10)
-    ax.set_ylim(-10,10)
+    ax.tick_params(colors=CHART_COLORS['text'], labelsize=10, length=4, width=0.6)
+    ax.set_xlabel(xlabel, color=CHART_COLORS['text'], fontsize=12, fontweight='bold', labelpad=10)
+    ax.set_ylabel(ylabel, color=CHART_COLORS['text'], fontsize=12, fontweight='bold', labelpad=10)
+
+    if title:
+        ax.set_title(title, color=CHART_COLORS['text'], fontsize=15, fontweight='bold', pad=15)
+
+    ax.set_xlim(-10, 10)
+    ax.set_ylim(-10, 10)
 
     return fig, ax
 
@@ -266,10 +289,10 @@ def lineal():
 
             if tipo == "dos_puntos":
 
-                x1 = float(request.form.get("x"))
-                y1 = float(request.form.get("y"))
-                x2 = float(request.form.get("x"))
-                y2 = float(request.form.get("y"))
+                x1 = float(request.form.get("x1"))
+                y1 = float(request.form.get("y1"))
+                x2 = float(request.form.get("x2"))
+                y2 = float(request.form.get("y2"))
 
                 if x1 == x2:
                     raise ValueError
@@ -286,12 +309,27 @@ def lineal():
 
             resultado = f"x = {x:.2f}"
 
-            fig, ax = grafica_base()
+            fig, ax = grafica_base(title="Ecuación Lineal", ylabel="f(x)")
 
-            xs = np.linspace(-10,10,200)
+            xs = np.linspace(-10, 10, 400)
+            ys = m * xs + b
 
-            ax.plot(xs, m*xs + b)
-            ax.scatter([x],[0],color="red")
+            ax.plot(xs, ys, color=CHART_COLORS['accent1'], linewidth=2.5,
+                    label=f'y = {m:.1f}x + {b:.1f}', zorder=3)
+            ax.fill_between(xs, ys, alpha=0.08, color=CHART_COLORS['accent1'])
+
+            ax.scatter([x], [0], color=CHART_COLORS['highlight'], s=120,
+                       zorder=5, edgecolors='white', linewidths=1.5,
+                       label=f'Raíz x = {x:.2f}')
+            ax.annotate(f'({x:.2f}, 0)', (x, 0), textcoords='offset points',
+                        xytext=(12, 14), fontsize=10, color=CHART_COLORS['highlight'],
+                        fontweight='bold',
+                        arrowprops=dict(arrowstyle='->', color=CHART_COLORS['highlight'],
+                                        lw=1.5))
+
+            ax.legend(loc='upper left', fontsize=10, facecolor=CHART_COLORS['surface'],
+                      edgecolor=CHART_COLORS['grid'], labelcolor=CHART_COLORS['text'],
+                      framealpha=0.9)
 
             img = convertir_imagen(fig)
 
@@ -360,9 +398,9 @@ def cuadratica():
 
         try:
 
-            a = float(request.form.get("a: ej: 2"))
-            b = float(request.form.get("b: ej: 8"))
-            c = float(request.form.get("c: ej: -10"))
+            a = float(request.form.get("a"))
+            b = float(request.form.get("b"))
+            c = float(request.form.get("c"))
 
             disc = b**2 - 4*a*c
 
@@ -373,11 +411,39 @@ def cuadratica():
                 x2 = (-b - np.sqrt(disc)) / (2*a)
                 sol = f"x1={x1:.2f}, x2={x2:.2f}"
 
-            fig,ax=grafica_base()
-            xs=np.linspace(-10,10,300)
-            ax.plot(xs,a*xs**2+b*xs+c)
+            fig, ax = grafica_base(title="Ecuación Cuadrática", ylabel="f(x)")
+            xs = np.linspace(-10, 10, 400)
+            ys = a * xs**2 + b * xs + c
 
-            img=convertir_imagen(fig)
+            ax.plot(xs, ys, color=CHART_COLORS['accent2'], linewidth=2.5,
+                    label=f'f(x) = {a:.1f}x² + {b:.1f}x + {c:.1f}', zorder=3)
+            ax.fill_between(xs, ys, alpha=0.10, color=CHART_COLORS['accent2'])
+
+            vx = -b / (2 * a)
+            vy = a * vx**2 + b * vx + c
+            ax.scatter([vx], [vy], color=CHART_COLORS['warn'], s=100,
+                       zorder=5, edgecolors='white', linewidths=1.5, marker='D',
+                       label=f'Vértice ({vx:.2f}, {vy:.2f})')
+
+            if disc >= 0:
+                roots_x = [x1]
+                if abs(x1 - x2) > 1e-9:
+                    roots_x.append(x2)
+                ax.scatter(roots_x, [0]*len(roots_x), color=CHART_COLORS['highlight'],
+                           s=120, zorder=5, edgecolors='white', linewidths=1.5,
+                           label='Raíces')
+                for rx in roots_x:
+                    ax.annotate(f'({rx:.2f}, 0)', (rx, 0), textcoords='offset points',
+                                xytext=(10, 14), fontsize=9, color=CHART_COLORS['highlight'],
+                                fontweight='bold',
+                                arrowprops=dict(arrowstyle='->', color=CHART_COLORS['highlight'],
+                                                lw=1.5))
+
+            ax.legend(loc='upper left', fontsize=9, facecolor=CHART_COLORS['surface'],
+                      edgecolor=CHART_COLORS['grid'], labelcolor=CHART_COLORS['text'],
+                      framealpha=0.9)
+
+            img = convertir_imagen(fig)
 
         except:
             sol="Datos inválidos"
@@ -427,13 +493,13 @@ def sistema2x2():
 
         try:
 
-            a1=float(request.form.get("a"))
-            b1=float(request.form.get("b"))
-            c1=float(request.form.get("c"))
+            a1=float(request.form.get("a1"))
+            b1=float(request.form.get("b1"))
+            c1=float(request.form.get("c1"))
 
-            a2=float(request.form.get("a"))
-            b2=float(request.form.get("b"))
-            c2=float(request.form.get("c"))
+            a2=float(request.form.get("a2"))
+            b2=float(request.form.get("b2"))
+            c2=float(request.form.get("c2"))
 
             A=np.array([[a1,b1],[a2,b2]])
             B=np.array([c1,c2])
@@ -442,16 +508,29 @@ def sistema2x2():
 
             sol=f"x={x:.2f}, y={y:.2f}"
 
-            fig,ax=grafica_base()
+            fig, ax = grafica_base(title="Sistema de Ecuaciones 2×2", ylabel="y")
 
-            xs=np.linspace(-10,10,200)
+            xs = np.linspace(-10, 10, 400)
 
-            ax.plot(xs,(c1-a1*xs)/b1)
-            ax.plot(xs,(c2-a2*xs)/b2)
+            ax.plot(xs, (c1 - a1 * xs) / b1, color=CHART_COLORS['accent1'],
+                    linewidth=2.5, label=f'{a1:.0f}x + {b1:.0f}y = {c1:.0f}', zorder=3)
+            ax.plot(xs, (c2 - a2 * xs) / b2, color=CHART_COLORS['accent3'],
+                    linewidth=2.5, label=f'{a2:.0f}x + {b2:.0f}y = {c2:.0f}', zorder=3)
 
-            ax.scatter([x],[y],color="red")
+            ax.scatter([x], [y], color=CHART_COLORS['highlight'], s=150,
+                       zorder=5, edgecolors='white', linewidths=2,
+                       label=f'Solución ({x:.2f}, {y:.2f})')
+            ax.annotate(f'({x:.2f}, {y:.2f})', (x, y), textcoords='offset points',
+                        xytext=(14, 14), fontsize=10, color=CHART_COLORS['highlight'],
+                        fontweight='bold',
+                        arrowprops=dict(arrowstyle='->', color=CHART_COLORS['highlight'],
+                                        lw=1.5))
 
-            img=convertir_imagen(fig)
+            ax.legend(loc='upper left', fontsize=9, facecolor=CHART_COLORS['surface'],
+                      edgecolor=CHART_COLORS['grid'], labelcolor=CHART_COLORS['text'],
+                      framealpha=0.9)
+
+            img = convertir_imagen(fig)
 
         except:
             sol="Sistema inválido"
@@ -503,15 +582,15 @@ def sistema3x3():
         try:
 
             A=np.array([
-                [float(request.form.get("a")),float(request.form.get("b")),float(request.form.get("c"))],
-                [float(request.form.get("a")),float(request.form.get("b")),float(request.form.get("c"))],
-                [float(request.form.get("a")),float(request.form.get("b")),float(request.form.get("c"))]
+                [float(request.form.get("a1")),float(request.form.get("b1")),float(request.form.get("c1"))],
+                [float(request.form.get("a2")),float(request.form.get("b2")),float(request.form.get("c2"))],
+                [float(request.form.get("a3")),float(request.form.get("b3")),float(request.form.get("c3"))]
             ])
 
             B=np.array([
-                float(request.form.get("d")),
-                float(request.form.get("d")),
-                float(request.form.get("d"))
+                float(request.form.get("d1")),
+                float(request.form.get("d2")),
+                float(request.form.get("d3"))
             ])
 
             x=np.linalg.solve(A,B)
