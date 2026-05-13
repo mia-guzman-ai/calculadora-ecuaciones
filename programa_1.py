@@ -1,13 +1,16 @@
 from flask import Flask, render_template_string, request
 import numpy as np
+
 import matplotlib
 matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
-import io, base64
+import io
+import base64
 
 app = Flask(__name__)
 
-# ================= IMAGEN =================
+# ================= FUNCION IMAGEN =================
 
 def convertir_imagen(fig):
     img = io.BytesIO()
@@ -15,29 +18,41 @@ def convertir_imagen(fig):
     img.seek(0)
     return base64.b64encode(img.getvalue()).decode()
 
-# ================= SAFE INPUT =================
+# ================= SEGURIDAD INPUTS =================
 
-def fget(key):
+def fget(key, default="0"):
     val = request.form.get(key)
-    return val if val not in [None, ""] else "0"
+    if val is None or val == "":
+        return default
+    return val
 
 # ================= ESTILO (NO TOCADO) =================
 
-ESTILO = """TU CSS ORIGINAL AQUÍ"""
+ESTILO = """TU CSS EXACTO SIN CAMBIOS"""
 
-MENU = """TU MENU ORIGINAL AQUÍ"""
+# ================= MENU =================
+
+MENU = """TU MENU EXACTO SIN CAMBIOS"""
 
 # ================= GRAFICA =================
 
 def grafica_base():
     fig, ax = plt.subplots(figsize=(8,5))
+
     fig.patch.set_facecolor('#ffffff')
     ax.set_facecolor('#ffffff')
-    ax.axhline(0, color="black")
-    ax.axvline(0, color="black")
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    ax.axhline(0,color="black")
+    ax.axvline(0,color="black")
+
     ax.grid(True)
+
     ax.set_xlim(-10,10)
     ax.set_ylim(-10,10)
+
     return fig, ax
 
 # ================= HOME =================
@@ -45,15 +60,48 @@ def grafica_base():
 @app.route("/")
 def inicio():
     return render_template_string(f"""
-<html><head>{ESTILO}</head>
+<html>
+<head>{ESTILO}</head>
 <body>{MENU}
+
 <div class="main">
+
 <div class="card">
 <h1>Bienvenido 👋</h1>
-<p>Plataforma matemática interactiva</p>
+
+<p>
+Plataforma matemática interactiva diseñada para resolver
+ecuaciones lineales, cuadráticas y sistemas de ecuaciones.
+</p>
+
+<p>
+El sistema calcula automáticamente soluciones,
+genera gráficas e interpreta resultados.
+</p>
+
+<h3>Desarrollado por:</h3>
+<h2>MIA GUZMAN MOSQUEDA</h2>
+
 </div>
+
+<div class="card">
+
+<h2>¿Qué puedes hacer?</h2>
+
+<ul>
+<li>Resolver ecuaciones lineales</li>
+<li>Resolver ecuaciones cuadráticas</li>
+<li>Resolver sistemas 2x2</li>
+<li>Resolver sistemas 3x3</li>
+<li>Visualizar gráficas automáticas</li>
+</ul>
+
 </div>
-</body></html>
+
+</div>
+
+</body>
+</html>
 """)
 
 # ================= LINEAL =================
@@ -66,48 +114,65 @@ def lineal():
     resultado = ""
     img = ""
 
-    # mantener datos
-    vals = {k: request.form.get(k,"") for k in ["m","b","x1","y1","x2","y2"]}
+    # mantener valores (ARREGLA QUE SE BORRAN)
+    m_val = fget("m","")
+    b_val = fget("b","")
+    x1_val = fget("x1","")
+    y1_val = fget("y1","")
+    x2_val = fget("x2","")
+    y2_val = fget("y2","")
 
     if request.method == "POST":
+
         try:
+
             if tipo == "dos_puntos":
-                x1 = float(vals["x1"])
-                y1 = float(vals["y1"])
-                x2 = float(vals["x2"])
-                y2 = float(vals["y2"])
+
+                x1 = float(x1_val)
+                y1 = float(y1_val)
+                x2 = float(x2_val)
+                y2 = float(y2_val)
 
                 if x1 == x2:
                     resultado = "Error: x1 = x2"
-                    return ""
+                else:
+                    m = (y2 - y1) / (x2 - x1)
+                    b = y1 - m * x1
 
-                m = (y2 - y1) / (x2 - x1)
-                b = y1 - m * x1
+                    x = -b/m if m != 0 else 0
+                    resultado = f"x = {x:.2f}"
+
+                    fig, ax = grafica_base()
+                    xs = np.linspace(-10,10,200)
+                    ax.plot(xs, m*xs + b)
+                    ax.scatter([x],[0],color="red")
+                    img = convertir_imagen(fig)
+
             else:
-                m = float(vals["m"])
-                b = float(vals["b"])
 
-            x = -b/m if m != 0 else 0
-            resultado = f"x = {x:.2f}"
+                m = float(m_val)
+                b = float(b_val)
 
-            fig, ax = grafica_base()
-            xs = np.linspace(-10,10,200)
-            ax.plot(xs, m*xs + b)
-            ax.scatter([x],[0],color="red")
+                x = -b/m if m != 0 else 0
+                resultado = f"x = {x:.2f}"
 
-            img = convertir_imagen(fig)
+                fig, ax = grafica_base()
+                xs = np.linspace(-10,10,200)
+                ax.plot(xs, m*xs + b)
+                ax.scatter([x],[0],color="red")
+                img = convertir_imagen(fig)
 
         except:
             resultado = "Datos inválidos"
 
     html_inputs = """
-    <input name="m" placeholder="m">
-    <input name="b" placeholder="b">
-    """ if tipo=="pendiente" else """
-    <input name="x1" placeholder="x1">
-    <input name="y1" placeholder="y1">
-    <input name="x2" placeholder="x2">
-    <input name="y2" placeholder="y2">
+    <input name="m" placeholder="m" value="{m_val}">
+    <input name="b" placeholder="b" value="{b_val}">
+    """ if tipo=="pendiente" else f"""
+    <input name="x1" placeholder="x1" value="{x1_val}">
+    <input name="y1" placeholder="y1" value="{y1_val}">
+    <input name="x2" placeholder="x2" value="{x2_val}">
+    <input name="y2" placeholder="y2" value="{y2_val}">
     """
 
     return render_template_string(f"""
@@ -124,7 +189,7 @@ def lineal():
 <form method="POST">
 
 <select name="tipo" onchange="this.form.submit()">
-<option value="pendiente" {"selected" if tipo=="pendiente" else ""}>Pendiente</option>
+<option value="pendiente" {"selected" if tipo=="pendiente" else ""}>Pendiente + b</option>
 <option value="dos_puntos" {"selected" if tipo=="dos_puntos" else ""}>Dos puntos</option>
 </select>
 
@@ -153,36 +218,39 @@ def lineal():
 @app.route("/cuadratica",methods=["GET","POST"])
 def cuadratica():
 
-    vals = {k: request.form.get(k,"") for k in ["a","b","c"]}
+    a_val = fget("a","")
+    b_val = fget("b","")
+    c_val = fget("c","")
 
-    sol=""
-    img=""
+    sol = ""
+    img = ""
 
     if request.method=="POST":
         try:
-            a=float(vals["a"])
-            b=float(vals["b"])
-            c=float(vals["c"])
+
+            a = float(a_val)
+            b = float(b_val)
+            c = float(c_val)
 
             if a == 0:
-                sol = "No es cuadrática (a=0)"
+                sol = "No es cuadrática"
             else:
-                disc=b**2-4*a*c
+                disc = b**2 - 4*a*c
 
                 if disc < 0:
-                    sol="Sin raíces reales"
+                    sol = "Sin raíces reales"
                 else:
-                    x1=(-b+np.sqrt(disc))/(2*a)
-                    x2=(-b-np.sqrt(disc))/(2*a)
-                    sol=f"x1={x1:.2f}, x2={x2:.2f}"
+                    x1 = (-b + np.sqrt(disc)) / (2*a)
+                    x2 = (-b - np.sqrt(disc)) / (2*a)
+                    sol = f"x1={x1:.2f}, x2={x2:.2f}"
 
-                fig,ax=grafica_base()
-                xs=np.linspace(-10,10,300)
-                ax.plot(xs,a*xs**2+b*xs+c)
-                img=convertir_imagen(fig)
+                fig, ax = grafica_base()
+                xs = np.linspace(-10,10,300)
+                ax.plot(xs, a*xs**2 + b*xs + c)
+                img = convertir_imagen(fig)
 
         except:
-            sol="Datos inválidos"
+            sol = "Datos inválidos"
 
     return render_template_string(f"""
 <html>
@@ -192,14 +260,14 @@ def cuadratica():
 <div class="main">
 
 <div class="card">
+
 <h2>Cuadrática</h2>
 
 <form method="POST">
-<input name="a" value="{vals['a']}" placeholder="a">
-<input name="b" value="{vals['b']}" placeholder="b">
-<input name="c" value="{vals['c']}" placeholder="c">
-
-<button type="submit">Calcular</button>
+<input name="a" value="{a_val}">
+<input name="b" value="{b_val}">
+<input name="c" value="{c_val}">
+<button>Calcular</button>
 <button type="reset">Limpiar</button>
 </form>
 
@@ -221,24 +289,29 @@ def cuadratica():
 @app.route("/sistema2x2",methods=["GET","POST"])
 def sistema2x2():
 
-    vals = {k: request.form.get(k,"") for k in ["a1","b1","c1","a2","b2","c2"]}
+    vals = {k: fget(k,"") for k in ["a1","b1","c1","a2","b2","c2"]}
 
-    sol=""
-    img=""
+    sol = ""
+    img = ""
 
     if request.method=="POST":
         try:
-            a1,b1,c1 = float(vals["a1"]),float(vals["b1"]),float(vals["c1"])
-            a2,b2,c2 = float(vals["a2"]),float(vals["b2"]),float(vals["c2"])
 
-            A=np.array([[a1,b1],[a2,b2]])
-            B=np.array([c1,c2])
+            a1 = float(vals["a1"])
+            b1 = float(vals["b1"])
+            c1 = float(vals["c1"])
+            a2 = float(vals["a2"])
+            b2 = float(vals["b2"])
+            c2 = float(vals["c2"])
 
-            x,y=np.linalg.solve(A,B)
-            sol=f"x={x:.2f}, y={y:.2f}"
+            A = np.array([[a1,b1],[a2,b2]])
+            B = np.array([c1,c2])
 
-            fig,ax=grafica_base()
-            xs=np.linspace(-10,10,200)
+            x,y = np.linalg.solve(A,B)
+            sol = f"x={x:.2f}, y={y:.2f}"
+
+            fig, ax = grafica_base()
+            xs = np.linspace(-10,10,200)
 
             if b1 != 0:
                 ax.plot(xs,(c1-a1*xs)/b1)
@@ -246,11 +319,10 @@ def sistema2x2():
                 ax.plot(xs,(c2-a2*xs)/b2)
 
             ax.scatter([x],[y],color="red")
-
-            img=convertir_imagen(fig)
+            img = convertir_imagen(fig)
 
         except:
-            sol="Sistema inválido"
+            sol = "Sistema inválido"
 
     return render_template_string(f"""
 <html>
@@ -260,9 +332,11 @@ def sistema2x2():
 <div class="main">
 
 <div class="card">
+
 <h2>Sistema 2x2</h2>
 
 <form method="POST">
+
 <input name="a1" value="{vals['a1']}">
 <input name="b1" value="{vals['b1']}">
 <input name="c1" value="{vals['c1']}">
@@ -270,8 +344,9 @@ def sistema2x2():
 <input name="b2" value="{vals['b2']}">
 <input name="c2" value="{vals['c2']}">
 
-<button type="submit">Resolver</button>
+<button>Resolver</button>
 <button type="reset">Limpiar</button>
+
 </form>
 
 </div>
@@ -292,27 +367,31 @@ def sistema2x2():
 @app.route("/sistema3x3",methods=["GET","POST"])
 def sistema3x3():
 
-    vals = {k: request.form.get(k,"") for k in ["a1","b1","c1","d1","a2","b2","c2","d2","a3","b3","c3","d3"]}
+    vals = {k: fget(k,"") for k in ["a1","b1","c1","d1","a2","b2","c2","d2","a3","b3","c3","d3"]}
 
-    sol=""
+    sol = ""
 
     if request.method=="POST":
         try:
 
-            A=np.array([
+            A = np.array([
                 [float(vals["a1"]),float(vals["b1"]),float(vals["c1"])],
                 [float(vals["a2"]),float(vals["b2"]),float(vals["c2"])],
                 [float(vals["a3"]),float(vals["b3"]),float(vals["c3"])]
             ])
 
-            B=np.array([float(vals["d1"]),float(vals["d2"]),float(vals["d3"])])
+            B = np.array([
+                float(vals["d1"]),
+                float(vals["d2"]),
+                float(vals["d3"])
+            ])
 
-            x=np.linalg.solve(A,B)
+            x = np.linalg.solve(A,B)
 
-            sol=f"x={x[0]:.2f}, y={x[1]:.2f}, z={x[2]:.2f}"
+            sol = f"x={x[0]:.2f}, y={x[1]:.2f}, z={x[2]:.2f}"
 
         except:
-            sol="Sistema inválido"
+            sol = "Sistema inválido"
 
     return render_template_string(f"""
 <html>
@@ -322,6 +401,7 @@ def sistema3x3():
 <div class="main">
 
 <div class="card">
+
 <h2>Sistema 3x3</h2>
 
 <form method="POST">
@@ -341,7 +421,7 @@ def sistema3x3():
 <input name="c3" value="{vals['c3']}">
 <input name="d3" value="{vals['d3']}">
 
-<button type="submit">Resolver</button>
+<button>Resolver</button>
 <button type="reset">Limpiar</button>
 
 </form>
