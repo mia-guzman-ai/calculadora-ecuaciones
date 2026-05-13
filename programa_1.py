@@ -21,11 +21,7 @@ def fget(key):
     val = request.form.get(key)
     return val if val not in [None, ""] else None
 
-# ================= ESTILO (NO TOCADO) =================
 
-ESTILO = """TU CSS ORIGINAL AQUÍ SIN CAMBIOS"""
-
-MENU = """TU MENU ORIGINAL AQUÍ SIN CAMBIOS"""
 
 # ================= GRAFICA =================
 
