@@ -1,11 +1,30 @@
-<h2>Cuadrática ax²+bx+c</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cuadrática</title>
 
-<form method="POST">
-<input name="a" placeholder="a">
-<input name="b" placeholder="b">
-<input name="c" placeholder="c">
+    <!-- 👇 ESTO ES LO IMPORTANTE (static bien conectado) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-<button type="submit">Calcular</button>
-</form>
+<body>
 
-<a href="/">Volver</a>
+    <div class="container">
+
+        <h2>Cuadrática ax² + bx + c</h2>
+
+        <form method="POST">
+            <input name="a" placeholder="a" required>
+            <input name="b" placeholder="b" required>
+            <input name="c" placeholder="c" required>
+
+            <button type="submit">Calcular</button>
+        </form>
+
+        <a href="/">Volver</a>
+
+    </div>
+
+</body>
+</html>
