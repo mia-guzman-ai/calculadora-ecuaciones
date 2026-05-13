@@ -3,9 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <title>Sistema 2x2</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
 
+</head>
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#081b33,#0f3460);
+    color:white;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:260px;
+    height:100vh;
+    position:fixed;
+    background:#06111f;
+    padding-top:20px;
+    box-shadow:2px 0 15px rgba(0,0,0,0.5);
+}
+
+.sidebar h2{
+    text-align:center;
+    color:#8ec5ff;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:15px;
+    transition:0.3s;
+    border-left:4px solid transparent;
+}
+
+.sidebar a:hover{
+    background:#12345c;
+    border-left:4px solid #5aa9ff;
+}
+
+/* MAIN */
+
+.main{
+    margin-left:280px;
+    padding:40px;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    border-radius:20px;
+    padding:30px;
+    margin-bottom:30px;
+    box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+/* INPUTS */
+
+input{
+    width:95%;
+    padding:14px;
+    margin-top:12px;
+    border:none;
+    border-radius:10px;
+    background:#dcecff;
+    font-size:15px;
+}
+
+/* BOTONES */
+
+.botones{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+button{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#1d4e89,#2563b8);
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+    font-weight:bold;
+}
+
+button:hover{
+    transform:scale(1.03);
+    background:linear-gradient(135deg,#2563b8,#3b82f6);
+}
+
+.btn-volver{
+    display:inline-block;
+    margin-top:20px;
+    text-decoration:none;
+    color:white;
+    background:#16355c;
+    padding:12px 20px;
+    border-radius:12px;
+}
+
+.btn-volver:hover{
+    background:#21558f;
+}
+
+img{
+    width:100%;
+    border-radius:15px;
+    margin-top:15px;
+    background:white;
+    padding:10px;
+}
+
+h1,h2,h3{
+    color:#b8dfff;
+}
+
+</style>
 <body>
 
 <div class="sidebar">
