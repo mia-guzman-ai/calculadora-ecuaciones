@@ -226,7 +226,7 @@ genera gráficas e interpreta resultados.
 </p>
 
 <h3>Desarrollado por:</h3>
-<h2>MIA GUZMAN MOSQUEDA</h2>
+<h2>MÍA GUZMÁN MOSQUEDA</h2>
 
 </div>
 
@@ -237,8 +237,8 @@ genera gráficas e interpreta resultados.
 <ul>
 <li>Resolver ecuaciones lineales</li>
 <li>Resolver ecuaciones cuadráticas</li>
-<li>Resolver sistemas 2x2</li>
-<li>Resolver sistemas 3x3</li>
+<li>Resolver sistemas 2 x 2</li>
+<li>Resolver sistemas 3 x 3</li>
 <li>Visualizar gráficas automáticas</li>
 </ul>
 
@@ -472,6 +472,8 @@ def sistema2x2():
 <h2>a1​x + b1​y = c1​​​</h2>
 <h2>a2​x + b2​y = c2​​</h2>
 
+<h2>Así como se presentan las ecuaciones favor de meter los datos en ese orden.</h2>
+
 <form method="POST">
 
 <input name="a1"><input name="b1"><input name="c1">
@@ -535,11 +537,13 @@ def sistema3x3():
 <div class="card">
 <h2>Sistema 3x3</h2>
 
-<h2>Un sistema de ecuaciones 3×3 es un conjunto de tres ecuaciones lineales con tres incógnitas, normalmente x, y y z, que se resuelven simultáneamente.</h2>
+<h2>Un sistema de ecuaciones 3×3 es un conjunto de tres ecuaciones lineales con tres incógnitas, normalmente (x), (y) y (z), que se resuelven simultáneamente.</h2>
 
 <h2>​a1​x + b1​y + c1​z = d1​​</h2>
 <h2> a2​x + b2​y + c2​z = d2</h2>
 <h2>​a3​x + b3​y + c3​z = d3</h2>
+
+<h2>Así como se presentan las ecuaciones favor de meter los datos en ese orden.</h2>
 
 <form method="POST">
 
