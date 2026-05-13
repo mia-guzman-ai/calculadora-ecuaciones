@@ -1,22 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>Sistema 2x2</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<h2>Sistema 2x2</h2>
+<body>
 
-<form method="POST">
+<div class="sidebar">
 
-<input name="a1" placeholder="a1">
-<input name="b1" placeholder="b1">
-<input name="c1" placeholder="c1">
+    <h2>Math App</h2>
 
-<input name="a2" placeholder="a2">
-<input name="b2" placeholder="b2">
-<input name="c2" placeholder="c2">
+    <a href="/">🏠 Inicio</a>
+    <a href="/lineal">📈 Lineal</a>
+    <a href="/cuadratica">📉 Cuadrática</a>
+    <a href="/sistema2x2">🔢 2x2</a>
+    <a href="/sistema3x3">📊 3x3</a>
 
-<button type="submit">Calcular</button>
-</form>
+</div>
 
-<a href="/">Volver</a>
+<div class="main">
+
+    <div class="card">
+
+        <h2>Sistema de Ecuaciones 2x2</h2>
+
+        <form method="POST">
+
+            <input type="number" step="any" name="a1"
+            placeholder="a1 | Ejemplo: 2" required>
+
+            <input type="number" step="any" name="b1"
+            placeholder="b1 | Ejemplo: 3" required>
+
+            <input type="number" step="any" name="c1"
+            placeholder="c1 | Ejemplo: 10" required>
+
+            <input type="number" step="any" name="a2"
+            placeholder="a2 | Ejemplo: 1" required>
+
+            <input type="number" step="any" name="b2"
+            placeholder="b2 | Ejemplo: -2" required>
+
+            <input type="number" step="any" name="c2"
+            placeholder="c2 | Ejemplo: 4" required>
+
+            <div class="botones">
+
+                <button type="submit">Calcular</button>
+
+                <button type="reset">Limpiar</button>
+
+            </div>
+
+        </form>
+
+        <a class="btn-volver" href="/">Volver</a>
+
+    </div>
+
+    <div class="card">
+
+        <h3>Interpretación</h3>
+
+        <p>
+            Un sistema 2x2 representa dos rectas.
+            La solución es el punto donde ambas
+            rectas se intersectan.
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>
