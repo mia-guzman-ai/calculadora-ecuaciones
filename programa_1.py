@@ -21,26 +21,33 @@ def grafica(fig):
 @app.route("/lineal", methods=["GET", "POST"])
 def lineal():
     if request.method == "POST":
-        a = float(request.form["a"])
-        b = float(request.form["b"])
+        try:
+            a = float(request.form["a"])
+            b = float(request.form["b"])
 
-        x = -b / a
+            if a == 0:
+                return "Error: a no puede ser 0"
 
-        fig, ax = plt.subplots()
-        xs = np.linspace(-10, 10, 100)
-        ys = a * xs + b
-        ax.plot(xs, ys)
-        ax.axhline(0, color="black")
-        ax.axvline(x, color="red")
+            x = -b / a
 
-        img = grafica(fig)
+            fig, ax = plt.subplots()
+            xs = np.linspace(-10, 10, 100)
+            ys = a * xs + b
+            ax.plot(xs, ys)
+            ax.axhline(0, color="black")
+            ax.axvline(x, color="red")
 
-        return render_template("resultado.html",
-            titulo="Ecuación Lineal",
-            resultado=f"x = {x:.2f}",
-            imagen=img,
-            explicacion="Solución donde la recta cruza el eje X"
-        )
+            img = grafica(fig)
+
+            return render_template("resultado.html",
+                titulo="Ecuación Lineal",
+                resultado=f"x = {x:.2f}",
+                imagen=img,
+                explicacion="Intersección con el eje X"
+            )
+
+        except Exception as e:
+            return f"Error lineal: {str(e)}"
 
     return render_template("lineal.html")
 
@@ -50,28 +57,36 @@ def lineal():
 @app.route("/cuadratica", methods=["GET", "POST"])
 def cuadratica():
     if request.method == "POST":
-        a = float(request.form["a"])
-        b = float(request.form["b"])
-        c = float(request.form["c"])
+        try:
+            a = float(request.form["a"])
+            b = float(request.form["b"])
+            c = float(request.form["c"])
 
-        disc = b**2 - 4*a*c
-        x1 = (-b + np.sqrt(disc)) / (2*a)
-        x2 = (-b - np.sqrt(disc)) / (2*a)
+            disc = b**2 - 4*a*c
 
-        fig, ax = plt.subplots()
-        xs = np.linspace(-10, 10, 100)
-        ys = a*xs**2 + b*xs + c
-        ax.plot(xs, ys)
-        ax.axhline(0)
+            if disc < 0:
+                return "No hay raíces reales"
 
-        img = grafica(fig)
+            x1 = (-b + np.sqrt(disc)) / (2*a)
+            x2 = (-b - np.sqrt(disc)) / (2*a)
 
-        return render_template("resultado.html",
-            titulo="Ecuación Cuadrática",
-            resultado=f"x1={x1:.2f}, x2={x2:.2f}",
-            imagen=img,
-            explicacion="Intersección de la parábola con el eje X"
-        )
+            fig, ax = plt.subplots()
+            xs = np.linspace(-10, 10, 100)
+            ys = a*xs**2 + b*xs + c
+            ax.plot(xs, ys)
+            ax.axhline(0)
+
+            img = grafica(fig)
+
+            return render_template("resultado.html",
+                titulo="Cuadrática",
+                resultado=f"x1={x1:.2f}, x2={x2:.2f}",
+                imagen=img,
+                explicacion="Raíces de la parábola"
+            )
+
+        except Exception as e:
+            return f"Error cuadrática: {str(e)}"
 
     return render_template("cuadratica.html")
 
@@ -81,27 +96,39 @@ def cuadratica():
 @app.route("/sistema2x2", methods=["GET", "POST"])
 def sistema2x2():
     if request.method == "POST":
-        a1,b1,c1 = map(float,[request.form["a1"],request.form["b1"],request.form["c1"]])
-        a2,b2,c2 = map(float,[request.form["a2"],request.form["b2"],request.form["c2"]])
+        try:
+            A = np.array([
+                [float(request.form["a1"]), float(request.form["b1"])],
+                [float(request.form["a2"]), float(request.form["b2"])]
+            ])
 
-        A = np.array([[a1,b1],[a2,b2]])
-        B = np.array([c1,c2])
+            B = np.array([float(request.form["c1"]), float(request.form["c2"])])
 
-        sol = np.linalg.solve(A,B)
+            if np.linalg.det(A) == 0:
+                return "Sistema sin solución única (det = 0)"
 
-        fig, ax = plt.subplots()
-        x = np.linspace(-10,10,100)
-        ax.plot(x,(c1-a1*x)/b1)
-        ax.plot(x,(c2-a2*x)/b2)
+            sol = np.linalg.solve(A, B)
 
-        img = grafica(fig)
+            fig, ax = plt.subplots()
+            x = np.linspace(-10, 10, 100)
 
-        return render_template("resultado.html",
-            titulo="Sistema 2x2",
-            resultado=f"x={sol[0]:.2f}, y={sol[1]:.2f}",
-            imagen=img,
-            explicacion="Punto de intersección de dos rectas"
-        )
+            y1 = (B[0] - A[0][0]*x) / A[0][1]
+            y2 = (B[1] - A[1][0]*x) / A[1][1]
+
+            ax.plot(x, y1)
+            ax.plot(x, y2)
+
+            img = grafica(fig)
+
+            return render_template("resultado.html",
+                titulo="Sistema 2x2",
+                resultado=f"x={sol[0]:.2f}, y={sol[1]:.2f}",
+                imagen=img,
+                explicacion="Intersección de dos rectas"
+            )
+
+        except Exception as e:
+            return f"Error sistema 2x2: {str(e)}"
 
     return render_template("sistema2x2.html")
 
