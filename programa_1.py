@@ -469,7 +469,8 @@ def sistema2x2():
 
 <h2>Un sistema de ecuaciones 2×2 es un conjunto de dos ecuaciones lineales con dos incógnitas, generalmente x y y, que se deben resolver al mismo tiempo.</h2>
 
-<h2>a1​x + b1​y = c1​ y a2​x + b2​y = c2​​</h2>
+<h2>a1​x + b1​y = c1​​​</h2>
+<h2>a2​x + b2​y = c2​​</h2>
 
 <form method="POST">
 
@@ -536,7 +537,9 @@ def sistema3x3():
 
 <h2>Un sistema de ecuaciones 3×3 es un conjunto de tres ecuaciones lineales con tres incógnitas, normalmente x, y y z, que se resuelven simultáneamente.</h2>
 
-<h2>​a1​x + b1​y + c1​z = d1, ​a2​x + b2​y + c2​z = d2, ​a3​x + b3​y + c3​z = d3​​</h2>
+<h2>​a1​x + b1​y + c1​z = d1​​</h2>
+<h2> a2​x + b2​y + c2​z = d2</h2>
+<h2>​a3​x + b3​y + c3​z = d3</h2>
 
 <form method="POST">
 
