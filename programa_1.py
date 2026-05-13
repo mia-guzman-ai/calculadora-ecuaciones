@@ -319,24 +319,21 @@ def lineal():
 
             xs = np.linspace(-10,10,200)
            ax.plot(
-    xs,
-    m*xs + b,
-    color="#2563eb",
-    linewidth=3,
-    label="Recta"
-)
+                    xs,
+                    m*xs + b,
+                    color="#2563eb",
+                    linewidth=3,
+                   )
 
           ax.scatter(
-    [x],
-    [0],
-    color="#ef4444",
-    s=120,
-    edgecolors="white",
-    linewidth=2,
-    zorder=5
-)
-
-ax.legend()
+                    [x],
+                    [0],
+                    color="#ef4444",
+                    s=120,
+                    edgecolors="white",
+                    linewidth=2,
+                    zorder=5
+                    )
 
 img = convertir_imagen(fig)
 
