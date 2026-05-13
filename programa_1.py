@@ -220,8 +220,33 @@ def inicio():
 
 <div class="card">
 <h1>Bienvenido 👋</h1>
-<p>Plataforma matemática interactiva funcionando correctamente.</p>
+  <p>
+                    Plataforma matemática interactiva diseñada para resolver
+                    ecuaciones lineales, cuadráticas y sistemas de ecuaciones.
+                </p>
+
+                <p>
+                    El sistema calcula automáticamente soluciones,
+                    genera gráficas e interpreta resultados.
+                </p>
+
+                <h3>Desarrollado por:</h3>
+
+                <h2>MIA GUZMAN MOSQUEDA</h2>
 </div>
+ <div class="card">
+
+                <h2>¿Qué puedes hacer?</h2>
+
+                <ul>
+                    <li>Resolver ecuaciones lineales</li>
+                    <li>Resolver ecuaciones cuadráticas</li>
+                    <li>Resolver sistemas 2x2</li>
+                    <li>Resolver sistemas 3x3</li>
+                    <li>Visualizar gráficas automáticas</li>
+                </ul>
+
+            </div>
 
 </div>
 
