@@ -1,28 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-body { background:#0b1f3a; color:white; font-family:Arial; }
-img { max-width:500px; }
-</style>
+<link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 
-<h1>{{titulo}}</h1>
+<div class="sidebar">
+    <h2>Ecuaciones</h2>
+    <a href="/lineal">Lineal</a>
+    <a href="/cuadratica">Cuadrática</a>
+    <a href="/sistema2x2">Sistema 2x2</a>
+    <a href="/sistema3x3">Sistema 3x3</a>
+    <a href="/">Inicio</a>
+</div>
 
-<h2>Resultado:</h2>
-<p>{{resultado}}</p>
+<div class="main">
 
-<h3>Interpretación:</h3>
-<p>{{explicacion}}</p>
+    <div class="card">
+        <h2>{{titulo}}</h2>
+        <h3>Resultado:</h3>
+        <p style="font-size:20px;">{{resultado}}</p>
+    </div>
 
-{% if imagen %}
-<img src="data:image/png;base64,{{imagen}}">
-{% endif %}
+    <div class="card">
+        <h3>Interpretación</h3>
+        <p>{{explicacion}}</p>
+    </div>
 
-<br><br>
-<a href="/">Volver</a>
+    {% if imagen %}
+    <div class="card">
+        <h3>Gráfica</h3>
+        <img src="data:image/png;base64,{{imagen}}">
+    </div>
+    {% endif %}
+
+</div>
 
 </body>
 </html>
