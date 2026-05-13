@@ -1,295 +1,144 @@
-from flask import Flask, request, jsonify, send_from_directory 
-
-  
-
-app = Flask(__name__) 
-
-  
-
-@app.route("/") 
-
-def home(): 
-
-    return send_from_directory(".", "index.html") 
-
-  
-
-  
-
-# ====================== 
-
-# LINEAL (3 FORMAS) 
-
-# ====================== 
-
-@app.route("/lineal", methods=["POST"]) 
-
-def lineal(): 
-
-    data = request.json 
-
-    tipo = data["tipo"] 
-
-  
-
-    x_vals = list(range(-10, 11)) 
-
-  
-
-    try: 
-
-        # ax + b = 0 
-
-        if tipo == "general": 
-
-            a = data["a"] 
-
-            b = data["b"] 
-
-  
-
-            if a == 0: 
-
-                return jsonify({"resultado": "No válida"}) 
-
-  
-
-            y_vals = [a*x + b for x in x_vals] 
-
-            resultado = f"x = {-b/a:.2f}" 
-
-  
-
-        # dos puntos 
-
-        elif tipo == "dos_puntos": 
-
-            x1, y1 = data["x1"], data["y1"] 
-
-            x2, y2 = data["x2"], data["y2"] 
-
-  
-
-            if x1 == x2: 
-
-                return jsonify({"resultado": "Recta vertical"}) 
-
-  
-
-            m = (y2 - y1)/(x2 - x1) 
-
-            b = y1 - m*x1 
-
-  
-
-            y_vals = [m*x + b for x in x_vals] 
-
-            resultado = f"y = {m:.2f}x + {b:.2f}" 
-
-  
-
-        # punto pendiente 
-
-        elif tipo == "punto_pendiente": 
-
-            m = data["m"] 
-
-            x1 = data["x1"] 
-
-            y1 = data["y1"] 
-
-  
-
-            b = y1 - m*x1 
-
-            y_vals = [m*x + b for x in x_vals] 
-
-            resultado = f"y = {m:.2f}x + {b:.2f}" 
-
-  
-
-        else: 
-
-            return jsonify({"resultado": "Tipo inválido"}) 
-
-  
-
-        return jsonify({"x": x_vals, "y": y_vals, "resultado": resultado}) 
-
-  
-
-    except: 
-
-        return jsonify({"resultado": "Error en datos"}) 
-
-  
-
-  
-
-# ====================== 
-
-# CUADRATICA (2 FORMAS) 
-
-# ====================== 
-
-@app.route("/cuadratica", methods=["POST"]) 
-
-def cuadratica(): 
-
-    data = request.json 
-
-    tipo = data["tipo"] 
-
-  
-
-    x_vals = list(range(-10, 11)) 
-
-  
-
-    try: 
-
-        if tipo == "general": 
-
-            a, b, c = data["a"], data["b"], data["c"] 
-
-  
-
-        elif tipo == "tres_puntos": 
-
-            x1,y1 = data["x1"], data["y1"] 
-
-            x2,y2 = data["x2"], data["y2"] 
-
-            x3,y3 = data["x3"], data["y3"] 
-
-  
-
-            a = ((y3 - ((y2-y1)/(x2-x1)*(x3-x1)+y1)) / ((x3-x1)*(x3-x2))) 
-
-            b = (y2-y1)/(x2-x1) - a*(x1+x2) 
-
-            c = y1 - a*x1**2 - b*x1 
-
-  
-
-        else: 
-
-            return jsonify({"resultado": "Tipo inválido"}) 
-
-  
-
-        if a == 0: 
-
-            return jsonify({"resultado": "No es cuadrática"}) 
-
-  
-
-        y_vals = [a*x**2 + b*x + c for x in x_vals] 
-
-  
-
-        d = b**2 - 4*a*c 
-
-  
-
-        if d > 0: 
-
-            r1 = (-b + math.sqrt(d))/(2*a) 
-
-            r2 = (-b - math.sqrt(d))/(2*a) 
-
-            res = f"Raíces: {r1:.2f}, {r2:.2f}" 
-
-        elif d == 0: 
-
-            r = -b/(2*a) 
-
-            res = f"Raíz: {r:.2f}" 
-
-        else: 
-
-            res = "No reales" 
-
-  
-
-        return jsonify({"x": x_vals, "y": y_vals, "resultado": res}) 
-
-  
-
-    except: 
-
-        return jsonify({"resultado": "Error en datos"}) 
-
-  
-
-  
-
-# ====================== 
-
-# SISTEMA 
-
-# ====================== 
-
-@app.route("/sistema", methods=["POST"]) 
-
-def sistema(): 
-
-    data = request.json 
-
-  
-
-    a,b,c = data["a"], data["b"], data["c"] 
-
-    d,e,f = data["d"], data["e"], data["f"] 
-
-  
-
-    det = a*e - b*d 
-
-  
-
-    if det == 0: 
-
-        return jsonify({"resultado": "Sin solución"}) 
-
-  
-
-    x = (c*e - b*f)/det 
-
-    y = (a*f - c*d)/det 
-
-  
-
-    # para graficar 
-
-    x_vals = list(range(-10,11)) 
-
-    y1 = [(-a*x + c)/b for x in x_vals] 
-
-    y2 = [(-d*x + f)/e for x in x_vals] 
-
-  
-
-    return jsonify({ 
-
-        "resultado": f"x={x:.2f}, y={y:.2f}", 
-
-        "x": x_vals, 
-
-        "y1": y1, 
-
-        "y2": y2 
-
-    }) 
-
-  
-
-  
-
-if __name__ == "__main__": 
-
-    import os 
-
-    port = int(os.environ.get("PORT", 8080)) 
-
-    app.run(host="0.0.0.0", port=port) 
+from flask import Flask, render_template, request
+import numpy as np
+import matplotlib.pyplot as plt
+import io
+import base64
+
+app = Flask(__name__)
+
+# =========================
+# FUNCION PARA GRAFICA
+# =========================
+def grafica(fig):
+    img = io.BytesIO()
+    fig.savefig(img, format='png')
+    img.seek(0)
+    return base64.b64encode(img.getvalue()).decode()
+
+# =========================
+# LINEAL: ax + b = 0
+# =========================
+@app.route("/lineal", methods=["GET", "POST"])
+def lineal():
+    if request.method == "POST":
+        a = float(request.form["a"])
+        b = float(request.form["b"])
+
+        x = -b / a
+
+        fig, ax = plt.subplots()
+        xs = np.linspace(-10, 10, 100)
+        ys = a * xs + b
+        ax.plot(xs, ys)
+        ax.axhline(0, color="black")
+        ax.axvline(x, color="red")
+
+        img = grafica(fig)
+
+        return render_template("resultado.html",
+            titulo="Ecuación Lineal",
+            resultado=f"x = {x:.2f}",
+            imagen=img,
+            explicacion="Solución donde la recta cruza el eje X"
+        )
+
+    return render_template("lineal.html")
+
+# =========================
+# CUADRÁTICA
+# =========================
+@app.route("/cuadratica", methods=["GET", "POST"])
+def cuadratica():
+    if request.method == "POST":
+        a = float(request.form["a"])
+        b = float(request.form["b"])
+        c = float(request.form["c"])
+
+        disc = b**2 - 4*a*c
+        x1 = (-b + np.sqrt(disc)) / (2*a)
+        x2 = (-b - np.sqrt(disc)) / (2*a)
+
+        fig, ax = plt.subplots()
+        xs = np.linspace(-10, 10, 100)
+        ys = a*xs**2 + b*xs + c
+        ax.plot(xs, ys)
+        ax.axhline(0)
+
+        img = grafica(fig)
+
+        return render_template("resultado.html",
+            titulo="Ecuación Cuadrática",
+            resultado=f"x1={x1:.2f}, x2={x2:.2f}",
+            imagen=img,
+            explicacion="Intersección de la parábola con el eje X"
+        )
+
+    return render_template("cuadratica.html")
+
+# =========================
+# SISTEMA 2X2
+# =========================
+@app.route("/sistema2x2", methods=["GET", "POST"])
+def sistema2x2():
+    if request.method == "POST":
+        a1,b1,c1 = map(float,[request.form["a1"],request.form["b1"],request.form["c1"]])
+        a2,b2,c2 = map(float,[request.form["a2"],request.form["b2"],request.form["c2"]])
+
+        A = np.array([[a1,b1],[a2,b2]])
+        B = np.array([c1,c2])
+
+        sol = np.linalg.solve(A,B)
+
+        fig, ax = plt.subplots()
+        x = np.linspace(-10,10,100)
+        ax.plot(x,(c1-a1*x)/b1)
+        ax.plot(x,(c2-a2*x)/b2)
+
+        img = grafica(fig)
+
+        return render_template("resultado.html",
+            titulo="Sistema 2x2",
+            resultado=f"x={sol[0]:.2f}, y={sol[1]:.2f}",
+            imagen=img,
+            explicacion="Punto de intersección de dos rectas"
+        )
+
+    return render_template("sistema2x2.html")
+
+# =========================
+# SISTEMA 3X3
+# =========================
+@app.route("/sistema3x3", methods=["GET", "POST"])
+def sistema3x3():
+    if request.method == "POST":
+        A = np.array([
+            [float(request.form["a11"]), float(request.form["a12"]), float(request.form["a13"])],
+            [float(request.form["a21"]), float(request.form["a22"]), float(request.form["a23"])],
+            [float(request.form["a31"]), float(request.form["a32"]), float(request.form["a33"])]
+        ])
+        B = np.array([
+            float(request.form["b1"]),
+            float(request.form["b2"]),
+            float(request.form["b3"])
+        ])
+
+        sol = np.linalg.solve(A,B)
+
+        return render_template("resultado.html",
+            titulo="Sistema 3x3",
+            resultado=f"x={sol[0]:.2f}, y={sol[1]:.2f}, z={sol[2]:.2f}",
+            imagen=None,
+            explicacion="Intersección de 3 planos en el espacio"
+        )
+
+    return render_template("sistema3x3.html")
+
+# =========================
+# INDEX
+# =========================
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
