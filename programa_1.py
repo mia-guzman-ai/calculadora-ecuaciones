@@ -11,7 +11,9 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template("index.html")
-
+    return render_template("resultado.html")
+    return render_template("sistema2x2.html")
+    return render_template("sistema3x3.html")
 
 # ======================
 # ECUACION LINEAL
