@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Resultado</title>
+<style>
+body { background:#0b1f3a; color:white; font-family:Arial; }
+img { max-width:500px; }
+</style>
 </head>
+
 <body>
 
-<h2>Resultado</h2>
+<h1>{{titulo}}</h1>
 
-<p>{{ ecuacion }}</p>
+<h2>Resultado:</h2>
+<p>{{resultado}}</p>
+
+<h3>Explicación:</h3>
+<p>{{explicacion}}</p>
 
 {% if imagen %}
-    <img src="/{{ imagen }}" width="400">
+<img src="data:image/png;base64,{{imagen}}">
 {% endif %}
 
-<br><br>
-
+<br>
 <a href="/">Volver al inicio</a>
 
 </body>
