@@ -183,21 +183,49 @@ MENU = """
 # ================= GRAFICA =================
 
 def grafica_base():
-    fig, ax = plt.subplots(figsize=(8,5))
+    fig, ax = plt.subplots(figsize=(10,6))
 
-    fig.patch.set_facecolor('#ffffff')
-    ax.set_facecolor('#ffffff')
+    # Fondo elegante
+    fig.patch.set_facecolor('#0f172a')
+    ax.set_facecolor('#f8fafc')
 
+    # Quitar bordes innecesarios
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
-    ax.axhline(0,color="black")
-    ax.axvline(0,color="black")
+    # Colores de ejes
+    ax.spines['left'].set_color('#334155')
+    ax.spines['bottom'].set_color('#334155')
 
-    ax.grid(True)
+    # Ejes principales
+    ax.axhline(0, color='#0f172a', linewidth=1.5)
+    ax.axvline(0, color='#0f172a', linewidth=1.5)
 
+    # Cuadrícula moderna
+    ax.grid(True,
+            linestyle='--',
+            linewidth=0.6,
+            alpha=0.5)
+
+    # Límites
     ax.set_xlim(-10,10)
     ax.set_ylim(-10,10)
+
+    # Marcas
+    ax.set_xticks(np.arange(-10,11,1))
+    ax.set_yticks(np.arange(-10,11,1))
+
+    # Color números
+    ax.tick_params(colors='#334155', labelsize=10)
+
+    # Título
+    ax.set_title(
+        "Gráfica Matemática",
+        fontsize=18,
+        fontweight='bold',
+        color='#0f172a',
+        pad=15
+    )
 
     return fig, ax
 
@@ -290,11 +318,27 @@ def lineal():
             fig, ax = grafica_base()
 
             xs = np.linspace(-10,10,200)
-            ax.plot(xs, m*xs + b)
+           ax.plot(
+    xs,
+    m*xs + b,
+    color="#2563eb",
+    linewidth=3,
+    label="Recta"
+)
 
-            ax.scatter([x],[0],color="red")
+          ax.scatter(
+    [x],
+    [0],
+    color="#ef4444",
+    s=120,
+    edgecolors="white",
+    linewidth=2,
+    zorder=5
+)
 
-            img = convertir_imagen(fig)
+ax.legend()
+
+img = convertir_imagen(fig)
 
         except:
             resultado = "Datos inválidos"
@@ -376,7 +420,13 @@ def cuadratica():
 
             fig,ax=grafica_base()
             xs=np.linspace(-10,10,300)
-            ax.plot(xs,a*xs**2+b*xs+c)
+          ax.plot(
+    xs,
+    a*xs**2+b*xs+c,
+    color="#7c3aed",
+    linewidth=3,
+    label="Parábola"
+)
 
             img=convertir_imagen(fig)
 
@@ -447,10 +497,29 @@ def sistema2x2():
 
             xs=np.linspace(-10,10,200)
 
-            ax.plot(xs,(c1-a1*xs)/b1)
-            ax.plot(xs,(c2-a2*xs)/b2)
+           ax.plot(
+    xs,
+    (c1-a1*xs)/b1,
+    linewidth=3,
+    color="#2563eb"
+)
 
-            ax.scatter([x],[y],color="red")
+ax.plot(
+    xs,
+    (c2-a2*xs)/b2,
+    linewidth=3,
+    color="#dc2626"
+)
+
+           ax.scatter(
+    [x],
+    [y],
+    color="#ef4444",
+    s=120,
+    edgecolors="white",
+    linewidth=2,
+    zorder=5
+)
 
             img=convertir_imagen(fig)
 
