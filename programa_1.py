@@ -319,8 +319,8 @@ def lineal():
 
             xs = np.linspace(-10,10,200)
             
-           ax.plot(xs + b, color="2563eb", linewidth=3)
-           ax.scatter([x], [0], color="#ef4444", s=120)
+           ax.plot(xs, m*xs + b)
+           ax.scatter([x],[0],color="red")
 
 
 img = convertir_imagen(fig)
@@ -405,14 +405,9 @@ def cuadratica():
 
             fig,ax=grafica_base()
             xs=np.linspace(-10,10,300)
-          ax.plot(
-    xs,
-    a*xs**2+b*xs+c,
-    color="#7c3aed",
-    linewidth=3,
-    label="Parábola"
-)
-
+            
+           ax.plot(xs,a*xs**2+b*xs+c)
+           ax.scatter([x],[y],color="red")
             img=convertir_imagen(fig)
 
         except:
@@ -482,29 +477,10 @@ def sistema2x2():
 
             xs=np.linspace(-10,10,200)
 
-           ax.plot(
-    xs,
-    (c1-a1*xs)/b1,
-    linewidth=3,
-    color="#2563eb"
-)
+ax.plot(xs,(c1-a1*xs)/b1)
+ax.plot(xs,(c2-a2*xs)/b2)
 
-ax.plot(
-    xs,
-    (c2-a2*xs)/b2,
-    linewidth=3,
-    color="#dc2626"
-)
-
-           ax.scatter(
-    [x],
-    [y],
-    color="#ef4444",
-    s=120,
-    edgecolors="white",
-    linewidth=2,
-    zorder=5
-)
+ax.scatter([x],[y],color="red")
 
             img=convertir_imagen(fig)
 
