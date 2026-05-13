@@ -1,0 +1,77 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b1f3a;
+    color: white;
+}
+
+/* LATERAL */
+.sidebar {
+    position: fixed;
+    width: 220px;
+    height: 100%;
+    background: #071428;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    color: #4da3ff;
+    text-align: center;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin: 8px 0;
+    color: white;
+    text-decoration: none;
+    background: #123a66;
+    border-radius: 8px;
+}
+
+.sidebar a:hover {
+    background: #1f5fa8;
+}
+
+/* CONTENIDO */
+.main {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+/* TARJETAS */
+.card {
+    background: #102a4a;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: none;
+}
+
+/* BOTONES */
+button {
+    padding: 10px;
+    margin-top: 10px;
+    background: #1f5fa8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2d7bd6;
+}
+
+img {
+    max-width: 100%;
+    border-radius: 10px;
+}
