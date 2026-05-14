@@ -275,10 +275,10 @@ MENU = """
     </div>
 
     <a href="/">Inicio</a>
-    <a href="/lineal">🔢Ecuacion Lineal</a>
-    <a href="/cuadratica">🧮Ecuacion Cuadratica</a>
-    <a href="/sistema2x2">📊Sistema 2x2</a>
-    <a href="/sistema3x3">📏Sistema 3x3</a>
+    <a href="/lineal">🔢Ecuación Lineal</a>
+    <a href="/cuadratica">🧮Ecuación Cuadratica</a>
+    <a href="/sistema2x2">📊Sistema 2 x 2</a>
+    <a href="/sistema3x3">📏Sistema 3 x 3</a>
 
 </div>
 """
@@ -532,7 +532,7 @@ def lineal():
             img = convertir_imagen(fig)
 
         except:
-            resultado = "Datos invalidos"
+            resultado = "Datos inválidos"
 
     if tipo == "pendiente":
         html_inputs = f"""
@@ -554,7 +554,7 @@ def lineal():
         """
 
     pdf_btn = ""
-    if resultado and resultado != "Datos invalidos":
+    if resultado and resultado != "Datos inválidos":
         pdf_btn = """
         <form method="POST" action="/pdf/lineal" style="display:inline">
         """ + (f'<input type="hidden" name="tipo" value="{tipo}">' +
@@ -579,7 +579,7 @@ def lineal():
 
 <h2>Ecuacion Lineal</h2>
 
-<h2>Las ecuaciones lineales son igualdades matematicas de primer grado donde las incognitas tienen exponente 1, representando una linea recta al graficarse.</h2>
+<h2>Las ecuaciones lineales son igualdades matemáticas de primer grado donde las incognitas tienen exponente 1, representando una lánea recta al graficarse.</h2>
 
 <h2>Elige los datos que tienes...</h2>
 
@@ -894,7 +894,7 @@ def sistema2x2():
 
 <form method="POST">
 
-<p style="color:#94a3b8; font-size:14px; margin-top:10px;">Ecuacion 1: a1*x + b1*y = c1</p>
+<p style="color:#94a3b8; font-size:14px; margin-top:10px;">Ecuación 1: a1*x + b1*y = c1</p>
 <span class="input-label">a1</span>
 <input name="a1" placeholder="ej: 2" value="{va1}">
 <span class="input-label">b1</span>
@@ -953,7 +953,7 @@ def sistema3x3():
 
             proceso = f"""
             <div class="proceso">
-            <h3>Proceso de solucion</h3>
+            <h3>Proceso de solución</h3>
 
             <div class="paso"><strong>Paso 1:</strong> Sistema de ecuaciones:
             <br><span class="formula">{a1}x + {b1}y + {c1}z = {d1}</span>
@@ -976,8 +976,8 @@ def sistema3x3():
             xv, yv, zv = result
 
             proceso += f"""
-            <div class="paso"><strong>Paso 4:</strong> Resolver el sistema usando eliminacion gaussiana:
-            <br>Como det(A) != 0, el sistema tiene solucion unica.</div>
+            <div class="paso"><strong>Paso 4:</strong> Resolver el sistema usando eliminación gaussiana:
+            <br>Como det(A) != 0, el sistema tiene solución única.</div>
 
             <div class="paso"><strong>Paso 5:</strong> Soluciones:
             <br><span class="formula">x = {xv:.4f}</span>
@@ -994,10 +994,10 @@ def sistema3x3():
             sol = f"x = {xv:.2f}, y = {yv:.2f}, z = {zv:.2f}"
 
         except:
-            sol = "Sistema invalido"
+            sol = "Sistema inválido"
 
     pdf_btn = ""
-    if sol and sol != "Sistema invalido":
+    if sol and sol != "Sistema inválido":
         pdf_btn = f"""
         <form method="POST" action="/pdf/sistema3x3" style="display:inline">
         <input type="hidden" name="a1" value="{va1}"><input type="hidden" name="b1" value="{vb1}">
@@ -1018,13 +1018,13 @@ def sistema3x3():
 <div class="main">
 
 <div class="card">
-<h2>Sistema 3x3</h2>
+<h2>Sistema 3 x 3</h2>
 
 <h2>Un sistema de ecuaciones 3x3 con tres ecuaciones y tres incognitas.</h2>
 
 <form method="POST">
 
-<p style="color:#94a3b8; font-size:14px; margin-top:10px;">Ecuacion 1: a1*x + b1*y + c1*z = d1</p>
+<p style="color:#94a3b8; font-size:14px; margin-top:10px;">Ecuación 1: a1*x + b1*y + c1*z = d1</p>
 <span class="input-label">a1</span>
 <input name="a1" placeholder="ej: 2" value="{va1}">
 <span class="input-label">b1</span>
@@ -1034,7 +1034,7 @@ def sistema3x3():
 <span class="input-label">d1</span>
 <input name="d1" placeholder="ej: 8" value="{vd1}">
 
-<p style="color:#94a3b8; font-size:14px; margin-top:20px;">Ecuacion 2: a2*x + b2*y + c2*z = d2</p>
+<p style="color:#94a3b8; font-size:14px; margin-top:20px;">Ecuación 2: a2*x + b2*y + c2*z = d2</p>
 <span class="input-label">a2</span>
 <input name="a2" placeholder="ej: -3" value="{va2}">
 <span class="input-label">b2</span>
