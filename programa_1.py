@@ -378,7 +378,7 @@ def inicio():
 <div class="main">
 
 <div class="card">
-<h1¡Bienvenido! 👋</h1>
+<h1>¡Bienvenido! 👋</h1>
 
 <p>
 Plataforma matemática interactiva diseñada para resolver
@@ -397,7 +397,7 @@ genera graficas e interpreta resultados.
 
 <div class="card">
 
-<h2>Que puedes hacer?</h2>
+<h2>¿Qué puedes hacer aquí?</h2>
 
 <ul>
 <li>Resolver ecuaciones lineales</li>
@@ -636,9 +636,9 @@ def cuadratica():
 
             proceso = f"""
             <div class="proceso">
-            <h3>Proceso de solucion</h3>
+            <h3>Proceso de solución</h3>
 
-            <div class="paso"><strong>Paso 1:</strong> Ecuacion cuadratica general:
+            <div class="paso"><strong>Paso 1:</strong> Ecuación cuadrática general:
             <br><span class="formula">ax2 + bx + c = 0</span></div>
 
             <div class="paso"><strong>Paso 2:</strong> Valores ingresados: a = {a}, b = {b}, c = {c}
@@ -661,7 +661,7 @@ def cuadratica():
                 x2 = x1
                 sol = f"x = {x1:.2f} (raiz doble)"
                 proceso += f"""
-                <div class="paso"><strong>Paso 4:</strong> Como D = 0, hay una raiz doble:
+                <div class="paso"><strong>Paso 4:</strong> Como D = 0, hay una raíz doble:
                 <br><span class="formula">x = -b / (2a) = -({b}) / (2 * {a}) = {x1:.4f}</span></div>
                 """
             else:
@@ -686,14 +686,14 @@ def cuadratica():
             vx = -b / (2 * a)
             vy = a * vx**2 + b * vx + c
             proceso += f"""
-            <div class="paso"><strong>Vertice:</strong> El vertice de la parabola se encuentra en:
+            <div class="paso"><strong>Vertice:</strong> El vértice de la parábola se encuentra en:
             <br><span class="formula">xv = -b / (2a) = -({b}) / (2 * {a}) = {vx:.4f}</span>
             <br><span class="formula">yv = f({vx:.4f}) = {vy:.4f}</span>
             <br><span class="formula">Vertice = ({vx:.4f}, {vy:.4f})</span></div>
             </div>
             """
 
-            fig, ax = grafica_base(title="Ecuacion Cuadratica", ylabel="f(x)")
+            fig, ax = grafica_base(title="Ecuación Cuadratica", ylabel="f(x)")
             xs = np.linspace(-10, 10, 400)
             ys = a * xs**2 + b * xs + c
 
@@ -726,10 +726,10 @@ def cuadratica():
             img = convertir_imagen(fig)
 
         except:
-            sol = "Datos invalidos"
+            sol = "Datos inválidos"
 
     pdf_btn = ""
-    if sol and sol != "Datos invalidos":
+    if sol and sol != "Datos inválidos":
         pdf_btn = f"""
         <form method="POST" action="/pdf/cuadratica" style="display:inline">
         <input type="hidden" name="a" value="{val_a}">
@@ -749,7 +749,9 @@ def cuadratica():
 <div class="card">
 <h2>Cuadratica</h2>
 
-<h2>Una ecuacion cuadratica es una ecuacion algebraica de segundo grado donde la variable esta elevada al cuadrado.</h2>
+<h2>Una ecuación cuadrática es una ecuación algebraica de segundo grado donde la variable esta elevada al cuadrado.</h2>
+
+<h2>ax2 + bx + c = 0</h2>
 
 <form method="POST">
 <span class="input-label">Coeficiente a (x2)</span>
