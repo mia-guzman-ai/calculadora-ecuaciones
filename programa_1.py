@@ -275,10 +275,10 @@ MENU = """
     </div>
 
     <a href="/">Inicio</a>
-    <a href="/lineal">Ecuacion Lineal</a>
-    <a href="/cuadratica">Ecuacion Cuadratica</a>
-    <a href="/sistema2x2">Sistema 2x2</a>
-    <a href="/sistema3x3">Sistema 3x3</a>
+    <a href="/lineal">🔢Ecuacion Lineal</a>
+    <a href="/cuadratica">🧮Ecuacion Cuadratica</a>
+    <a href="/sistema2x2">📊Sistema 2x2</a>
+    <a href="/sistema3x3">📏Sistema 3x3</a>
 
 </div>
 """
@@ -378,11 +378,11 @@ def inicio():
 <div class="main">
 
 <div class="card">
-<h1>Bienvenido</h1>
+<h1¡Bienvenido! 👋</h1>
 
 <p>
-Plataforma matematica interactiva disenada para resolver
-ecuaciones lineales, cuadraticas y sistemas de ecuaciones.
+Plataforma matemática interactiva diseñada para resolver
+ecuaciones lineales, cuadráticas y sistemas de ecuaciones.
 </p>
 
 <p>
@@ -391,7 +391,7 @@ genera graficas e interpreta resultados.
 </p>
 
 <h3>Desarrollado por:</h3>
-<h2>MIA GUZMAN MOSQUEDA</h2>
+<h2>MÍA GUZMÁN MOSQUEDA</h2>
 
 </div>
 
@@ -404,7 +404,7 @@ genera graficas e interpreta resultados.
 <li>Resolver ecuaciones cuadraticas</li>
 <li>Resolver sistemas 2 x 2</li>
 <li>Resolver sistemas 3 x 3</li>
-<li>Visualizar graficas automaticas</li>
+<li>Visualizar graficas automáticas</li>
 <li>Descargar resultados en PDF</li>
 </ul>
 
@@ -452,7 +452,7 @@ def lineal():
 
                 proceso = f"""
                 <div class="proceso">
-                <h3>Proceso de solucion</h3>
+                <h3>Proceso de solución</h3>
 
                 <div class="paso"><strong>Paso 1:</strong> Datos ingresados: Punto 1 ({x1}, {y1}) y Punto 2 ({x2}, {y2})</div>
 
@@ -462,10 +462,10 @@ def lineal():
                 <div class="paso"><strong>Paso 3:</strong> Sustituir valores:
                 <br><span class="formula">m = ({y2} - {y1}) / ({x2} - {x1}) = {y2 - y1} / {x2 - x1} = {m:.4f}</span></div>
 
-                <div class="paso"><strong>Paso 4:</strong> Calcular el intercepto b usando y = mx + b:
+                <div class="paso"><strong>Paso 4:</strong> Calcular la intercepción b usando y = mx + b:
                 <br><span class="formula">b = y1 - m * x1 = {y1} - ({m:.4f})({x1}) = {b:.4f}</span></div>
 
-                <div class="paso"><strong>Paso 5:</strong> La ecuacion de la recta es:
+                <div class="paso"><strong>Paso 5:</strong> La ecuación de la recta es:
                 <br><span class="formula">y = {m:.4f}x + {b:.4f}</span></div>
                 """
 
@@ -476,15 +476,15 @@ def lineal():
 
                 proceso = f"""
                 <div class="proceso">
-                <h3>Proceso de solucion</h3>
+                <h3>Proceso de solución</h3>
 
-                <div class="paso"><strong>Paso 1:</strong> Ecuacion lineal dada:
+                <div class="paso"><strong>Paso 1:</strong> Ecuación lineal dada:
                 <br><span class="formula">y = mx + b</span></div>
 
                 <div class="paso"><strong>Paso 2:</strong> Sustituir valores: m = {m}, b = {b}
                 <br><span class="formula">y = ({m})x + ({b})</span></div>
 
-                <div class="paso"><strong>Paso 3:</strong> Para encontrar la raiz (donde y = 0):
+                <div class="paso"><strong>Paso 3:</strong> Para encontrar la raíz (donde y = 0):
                 <br><span class="formula">0 = ({m})x + ({b})</span></div>
 
                 <div class="paso"><strong>Paso 4:</strong> Despejar x:
@@ -501,13 +501,13 @@ def lineal():
             else:
                 x = 0
                 proceso += f"""
-                <div class="paso"><strong>Paso 5:</strong> La pendiente es 0, la linea es horizontal en y = {b}</div>
+                <div class="paso"><strong>Paso 5:</strong> La pendiente es 0, la línea es horizontal en y = {b}</div>
                 </div>
                 """
 
             resultado = f"x = {x:.2f}"
 
-            fig, ax = grafica_base(title="Ecuacion Lineal", ylabel="f(x)")
+            fig, ax = grafica_base(title="Ecuación Lineal", ylabel="f(x)")
 
             xs = np.linspace(-10, 10, 400)
             ys = m * xs + b
@@ -538,7 +538,7 @@ def lineal():
         html_inputs = f"""
         <span class="input-label">Pendiente (m)</span>
         <input name="m" placeholder="ej: 2" value="{val_m}">
-        <span class="input-label">Intercepto (b)</span>
+        <span class="input-label">Intercepción (b)</span>
         <input name="b" placeholder="ej: -3" value="{val_b}">
         """
     else:
@@ -580,6 +580,8 @@ def lineal():
 <h2>Ecuacion Lineal</h2>
 
 <h2>Las ecuaciones lineales son igualdades matematicas de primer grado donde las incognitas tienen exponente 1, representando una linea recta al graficarse.</h2>
+
+<h2>Elige los datos que tienes...</h2>
 
 <form method="POST">
 
