@@ -417,10 +417,10 @@ genera graficas e interpreta resultados.
 
 <ul>
 <li>Resolver ecuaciones lineales</li>
-<li>Resolver ecuaciones cuadraticas</li>
+<li>Resolver ecuaciones cuadráticas</li>
 <li>Resolver sistemas 2 x 2</li>
 <li>Resolver sistemas 3 x 3</li>
-<li>Visualizar graficas automáticas</li>
+<li>Visualizar gráficas automáticas</li>
 <li>Descargar resultados en PDF</li>
 </ul>
 
@@ -468,7 +468,7 @@ def lineal():
 
                 proceso = f"""
                 <div class="proceso">
-                <h3>Proceso de solucion</h3>
+                <h3>Proceso de solución</h3>
 
                 <div class="paso"><strong>Paso 1:</strong> Datos ingresados: Punto 1 ({x1}, {y1}) y Punto 2 ({x2}, {y2})</div>
 
@@ -478,10 +478,10 @@ def lineal():
                 <div class="paso"><strong>Paso 3:</strong> Sustituir valores:
                 <br><span class="formula">m = ({y2} - {y1}) / ({x2} - {x1}) = {y2 - y1} / {x2 - x1} = {m:.4f}</span></div>
 
-                <div class="paso"><strong>Paso 4:</strong> Calcular la intercepcion b usando y = mx + b:
+                <div class="paso"><strong>Paso 4:</strong> Calcular la intersección b usando y = mx + b:
                 <br><span class="formula">b = y1 - m * x1 = {y1} - ({m:.4f})({x1}) = {b:.4f}</span></div>
 
-                <div class="paso"><strong>Paso 5:</strong> La ecuacion de la recta es:
+                <div class="paso"><strong>Paso 5:</strong> La ecuación de la recta es:
                 <br><span class="formula">y = {m:.4f}x + {b:.4f}</span></div>
                 """
 
@@ -494,7 +494,7 @@ def lineal():
 
                 proceso = f"""
                 <div class="proceso">
-                <h3>Proceso de solucion</h3>
+                <h3>Proceso de solución</h3>
 
                 <div class="paso"><strong>Paso 1:</strong> Datos ingresados: Punto ({x1}, {y1}), Pendiente m = {m}</div>
 
@@ -508,7 +508,7 @@ def lineal():
                 <br><span class="formula">y = {m}x - {m}({x1}) + {y1}</span>
                 <br><span class="formula">y = {m}x + {b:.4f}</span></div>
 
-                <div class="paso"><strong>Paso 5:</strong> La ecuacion de la recta es:
+                <div class="paso"><strong>Paso 5:</strong> La ecuación de la recta es:
                 <br><span class="formula">y = {m:.4f}x + {b:.4f}</span></div>
                 """
 
@@ -535,7 +535,7 @@ def lineal():
                 <div class="paso"><strong>Paso 1:</strong> Forma general: ax + by + c = 0
                 <br><span class="formula">{ga}x + {gb}y + {gc} = 0</span></div>
 
-                <div class="paso"><strong>Paso 2:</strong> Convertir a forma pendiente-intercepto y = mx + b:
+                <div class="paso"><strong>Paso 2:</strong> Convertir a forma pendiente-intersección y = mx + b:
                 <br><span class="formula">{gb}y = -{ga}x - {gc}</span></div>
                 """
 
@@ -558,15 +558,15 @@ def lineal():
 
                 proceso = f"""
                 <div class="proceso">
-                <h3>Proceso de solucion</h3>
+                <h3>Proceso de solución</h3>
 
-                <div class="paso"><strong>Paso 1:</strong> Ecuacion lineal dada:
+                <div class="paso"><strong>Paso 1:</strong> Ecuación lineal dada:
                 <br><span class="formula">y = mx + b</span></div>
 
                 <div class="paso"><strong>Paso 2:</strong> Sustituir valores: m = {m}, b = {b}
                 <br><span class="formula">y = ({m})x + ({b})</span></div>
 
-                <div class="paso"><strong>Paso 3:</strong> Para encontrar la raiz (donde y = 0):
+                <div class="paso"><strong>Paso 3:</strong> Para encontrar la raíz (donde y = 0):
                 <br><span class="formula">0 = ({m})x + ({b})</span></div>
 
                 <div class="paso"><strong>Paso 4:</strong> Despejar x:
@@ -596,7 +596,7 @@ def lineal():
                 """
                 resultado = f"x = {x:.2f}"
 
-            fig, ax = grafica_base(title="Ecuacion Lineal", ylabel="f(x)")
+            fig, ax = grafica_base(title="Ecuación Lineal", ylabel="f(x)")
 
             xs = np.linspace(-10, 10, 400)
 
@@ -681,7 +681,7 @@ def lineal():
         """
 
     pdf_btn = ""
-    if resultado and resultado != "Datos invalidos":
+    if resultado and resultado != "Datos inválidos":
         pdf_btn = """
         <form method="POST" action="/pdf/lineal" style="display:inline">
         """ + (f'<input type="hidden" name="tipo" value="{tipo}">' +
@@ -709,7 +709,7 @@ def lineal():
 
 <h2>Ecuacion Lineal</h2>
 
-<h2>Las ecuaciones lineales son igualdades matematicas de primer grado donde las incognitas tienen exponente 1, representando una linea recta al graficarse.</h2>
+<h2>Las ecuaciones lineales son igualdades matemáticas de primer grado donde las incognitas tienen exponente 1, representando una linea recta al graficarse.</h2>
 
 <h2>Elige los datos que tienes...</h2>
 
@@ -791,7 +791,7 @@ def cuadratica():
                 <br><span class="formula">y = {a}(x2 - {2*h}x + {h**2}) + {k}</span>
                 <br><span class="formula">y = {a}x2 + ({b:.4f})x + ({c:.4f})</span></div>
 
-                <div class="paso"><strong>Paso 4:</strong> Vertice de la parabola:
+                <div class="paso"><strong>Paso 4:</strong> Vertice de la parábola:
                 <br><span class="formula">Vertice = ({h}, {k})</span></div>
 
                 <div class="paso"><strong>Paso 5:</strong> Discriminante:
@@ -837,7 +837,7 @@ def cuadratica():
                 vy = a * vx**2 + b * vx + c
 
                 proceso += f"""
-                <div class="paso"><strong>Vertice:</strong>
+                <div class="paso"><strong>Vértice:</strong>
                 <br><span class="formula">xv = -(r1+r2)/2 = {vx:.4f}</span>
                 <br><span class="formula">yv = f({vx:.4f}) = {vy:.4f}</span>
                 <br><span class="formula">Vertice = ({vx:.4f}, {vy:.4f})</span></div>
@@ -862,7 +862,7 @@ def cuadratica():
                 <div class="proceso">
                 <h3>Proceso de solucion</h3>
 
-                <div class="paso"><strong>Paso 1:</strong> Ecuacion cuadratica general:
+                <div class="paso"><strong>Paso 1:</strong> Ecuación cuadrática general:
                 <br><span class="formula">ax2 + bx + c = 0</span></div>
 
                 <div class="paso"><strong>Paso 2:</strong> Valores ingresados: a = {a}, b = {b}, c = {c}
@@ -914,7 +914,7 @@ def cuadratica():
 
                 if tipo != "vertice":
                     proceso += f"""
-                    <div class="paso"><strong>Vertice:</strong> El vertice de la parabola se encuentra en:
+                    <div class="paso"><strong>Vertice:</strong> El vértice de la parábola se encuentra en:
                     <br><span class="formula">xv = -b / (2a) = -({b}) / (2 * {a}) = {vx:.4f}</span>
                     <br><span class="formula">yv = f({vx:.4f}) = {vy:.4f}</span>
                     <br><span class="formula">Vertice = ({vx:.4f}, {vy:.4f})</span></div>
@@ -922,7 +922,7 @@ def cuadratica():
 
                 proceso += "</div>"
 
-            fig, ax = grafica_base(title="Ecuacion Cuadratica", ylabel="f(x)")
+            fig, ax = grafica_base(title="Ecuación Cuadrática", ylabel="f(x)")
             xs = np.linspace(-10, 10, 400)
             ys = a * xs**2 + b * xs + c
 
@@ -1019,7 +1019,7 @@ def cuadratica():
 <div class="card">
 <h2>Cuadratica</h2>
 
-<h2>Una ecuacion cuadratica es una ecuacion algebraica de segundo grado donde la variable esta elevada al cuadrado.</h2>
+<h2>Una ecuación cuadrática es una ecuacián algebraica de segundo grado donde la variable esta elevada al cuadrado.</h2>
 
 <h2>Elige los datos que tienes...</h2>
 
@@ -1078,9 +1078,9 @@ def sistema2x2():
 
                 proceso = f"""
                 <div class="proceso">
-                <h3>Proceso de solucion</h3>
+                <h3>Proceso de solución</h3>
 
-                <div class="paso"><strong>Paso 1:</strong> Sistema en forma pendiente-intercepto:
+                <div class="paso"><strong>Paso 1:</strong> Sistema en forma pendiente-intersección:
                 <br><span class="formula">y = {m1}x + {n1}</span>
                 <br><span class="formula">y = {m2}x + {n2}</span></div>
 
@@ -1102,10 +1102,10 @@ def sistema2x2():
                 <div class="paso"><strong>Paso 4:</strong> Calcular x:
                 <br><span class="formula">x = {n2 - n1:.4f} / {m1 - m2:.4f} = {x:.4f}</span></div>
 
-                <div class="paso"><strong>Paso 5:</strong> Sustituir x en la primera ecuacion:
+                <div class="paso"><strong>Paso 5:</strong> Sustituir x en la primera ecuación:
                 <br><span class="formula">y = {m1}({x:.4f}) + {n1} = {y:.4f}</span></div>
 
-                <div class="paso"><strong>Verificacion:</strong>
+                <div class="paso"><strong>Verificación:</strong>
                 <br><span class="formula">Ec.1: y = {m1}({x:.4f}) + {n1} = {m1*x + n1:.4f}</span>
                 <br><span class="formula">Ec.2: y = {m2}({x:.4f}) + {n2} = {m2*x + n2:.4f}</span></div>
                 </div>
@@ -1146,7 +1146,7 @@ def sistema2x2():
                 """
 
                 if abs(det) < 1e-10:
-                    raise ValueError("Sistema sin solucion unica")
+                    raise ValueError("Sistema sin solución única")
 
                 A = np.array([[a1, b1], [a2, b2]])
                 B = np.array([c1, c2])
@@ -1239,7 +1239,7 @@ def sistema2x2():
         """
 
     pdf_btn = ""
-    if sol and sol != "Sistema invalido":
+    if sol and sol != "Sistema inválido":
         pdf_btn = f"""
         <form method="POST" action="/pdf/sistema2x2" style="display:inline">
         <input type="hidden" name="tipo" value="{tipo}">
@@ -1275,7 +1275,7 @@ def sistema2x2():
 
 <select name="tipo" onchange="this.form.submit()">
 <option value="estandar" {"selected" if tipo=="estandar" else ""}>Forma Estandar (ax+by=c)</option>
-<option value="pendiente_intercepto" {"selected" if tipo=="pendiente_intercepto" else ""}>Pendiente-Intercepto (y=mx+b)</option>
+<option value="pendiente_intercepto" {"selected" if tipo=="pendiente_intercepto" else ""}>Pendiente-Intersección (y=mx+b)</option>
 </select>
 
 {html_inputs}
@@ -1340,7 +1340,7 @@ def sistema3x3():
             """
 
             if abs(det_val) < 1e-10:
-                raise ValueError("Sistema sin solucion unica")
+                raise ValueError("Sistema sin solución única")
 
             result = np.linalg.solve(A, B)
             xv, yv, zv = result
@@ -1487,7 +1487,7 @@ def pdf_lineal():
         pdf.add_data_row("Pendiente (m)", str(m))
         pdf.ln(5)
 
-        pdf.add_subtitle("Proceso de solucion")
+        pdf.add_subtitle("Proceso de solución")
         pdf.add_step("Paso 1:", f"Forma punto-pendiente: y - y1 = m(x - x1)")
         pdf.add_step("Paso 2:", f"y - {y1v} = {m}(x - {x1v})")
         pdf.add_step("Paso 3:", f"y = {m}x - {m}({x1v}) + {y1v} = {m}x + {b:.4f}")
@@ -1504,7 +1504,7 @@ def pdf_lineal():
         pdf.add_data_row("c", str(gc))
         pdf.ln(5)
 
-        pdf.add_subtitle("Proceso de solucion")
+        pdf.add_subtitle("Proceso de solución")
         pdf.add_step("Paso 1:", f"Forma general: {ga}x + {gb}y + {gc} = 0")
 
         if gb != 0:
@@ -1531,12 +1531,12 @@ def pdf_lineal():
 
         pdf.add_subtitle("Datos ingresados (Pendiente + b)")
         pdf.add_data_row("Pendiente (m)", str(m))
-        pdf.add_data_row("Intercepto (b)", str(b))
+        pdf.add_data_row("Intersección (b)", str(b))
         pdf.ln(5)
 
-        pdf.add_subtitle("Proceso de solucion")
-        pdf.add_step("Paso 1:", f"Ecuacion: y = ({m})x + ({b})")
-        pdf.add_step("Paso 2:", f"Para encontrar la raiz: 0 = ({m})x + ({b})")
+        pdf.add_subtitle("Proceso de solución")
+        pdf.add_step("Paso 1:", f"Ecuación: y = ({m})x + ({b})")
+        pdf.add_step("Paso 2:", f"Para encontrar la raíz: 0 = ({m})x + ({b})")
         pdf.add_step("Paso 3:", f"({m})x = {-b}")
 
     if m != 0:
@@ -1550,7 +1550,7 @@ def pdf_lineal():
         pdf.ln(3)
         pdf.add_result(f"Linea horizontal y = {b}")
 
-    fig, ax = grafica_base(title="Ecuacion Lineal", ylabel="f(x)")
+    fig, ax = grafica_base(title="Ecuación Lineal", ylabel="f(x)")
     xs = np.linspace(-10, 10, 400)
     ax.plot(xs, m*xs+b, color=CHART_COLORS['accent1'], linewidth=2.5, label=f'y = {m:.1f}x + {b:.1f}', zorder=3)
     ax.fill_between(xs, m*xs+b, alpha=0.08, color=CHART_COLORS['accent1'])
@@ -1575,7 +1575,7 @@ def pdf_cuadratica():
 
     pdf = MathPDF()
     pdf.add_page()
-    pdf.add_title("Ecuacion Cuadratica")
+    pdf.add_title("Ecuación Cuadrática")
 
     if tipo == "vertice":
         a = float(request.form.get("a"))
@@ -1590,7 +1590,7 @@ def pdf_cuadratica():
         pdf.add_data_row("k", str(k))
         pdf.ln(5)
 
-        pdf.add_subtitle("Proceso de solucion")
+        pdf.add_subtitle("Proceso de solución")
         pdf.add_step("Forma vertice:", f"y = {a}(x - {h})2 + {k}")
         pdf.add_step("Expandir:", f"y = {a}x2 + ({b:.4f})x + ({c:.4f})")
         pdf.add_step("Vertice:", f"({h}, {k})")
@@ -1608,7 +1608,7 @@ def pdf_cuadratica():
         pdf.add_data_row("Raiz 2", str(r2))
         pdf.ln(5)
 
-        pdf.add_subtitle("Proceso de solucion")
+        pdf.add_subtitle("Proceso de solución")
         pdf.add_step("Forma factorizada:", f"y = {a}(x - {r1})(x - {r2})")
         pdf.add_step("Expandir:", f"y = {a}x2 + ({b:.4f})x + ({c:.4f})")
         pdf.add_step("Raices:", f"x1 = {r1}, x2 = {r2}")
@@ -1624,7 +1624,7 @@ def pdf_cuadratica():
         pdf.add_data_row("c", str(c))
         pdf.ln(5)
 
-        pdf.add_subtitle("Proceso de solucion")
+        pdf.add_subtitle("Proceso de solución")
         pdf.add_step("Ecuacion:", f"{a}x2 + ({b})x + ({c}) = 0")
 
     disc = b**2 - 4*a*c
@@ -1654,7 +1654,7 @@ def pdf_cuadratica():
     vy = a*vx**2 + b*vx + c
     pdf.add_step("Vertice:", f"({vx:.4f}, {vy:.4f})")
 
-    fig, ax = grafica_base(title="Ecuacion Cuadratica", ylabel="f(x)")
+    fig, ax = grafica_base(title="Ecuación Cuadrática", ylabel="f(x)")
     xs = np.linspace(-10, 10, 400)
     ys = a*xs**2 + b*xs + c
     ax.plot(xs, ys, color=CHART_COLORS['accent2'], linewidth=2.5, zorder=3)
@@ -1689,7 +1689,7 @@ def pdf_sistema2x2():
         m1 = float(request.form.get("m1")); n1 = float(request.form.get("n1"))
         m2 = float(request.form.get("m2")); n2 = float(request.form.get("n2"))
 
-        pdf.add_subtitle("Datos ingresados (Pendiente-Intercepto)")
+        pdf.add_subtitle("Datos ingresados (Pendiente-Intersección)")
         pdf.add_data_row("Linea 1", f"y = {m1}x + {n1}")
         pdf.add_data_row("Linea 2", f"y = {m2}x + {n2}")
         pdf.ln(5)
@@ -1697,7 +1697,7 @@ def pdf_sistema2x2():
         x = (n2 - n1) / (m1 - m2)
         y = m1 * x + n1
 
-        pdf.add_subtitle("Proceso de solucion")
+        pdf.add_subtitle("Proceso de solución")
         pdf.add_step("Paso 1:", f"Igualar: {m1}x + {n1} = {m2}x + {n2}")
         pdf.add_step("Paso 2:", f"({m1-m2:.4f})x = {n2-n1:.4f}")
         pdf.add_step("Paso 3:", f"x = {n2-n1:.4f}/{m1-m2:.4f} = {x:.4f}")
@@ -1714,7 +1714,7 @@ def pdf_sistema2x2():
         a1=float(request.form.get("a1")); b1=float(request.form.get("b1")); c1=float(request.form.get("c1"))
         a2=float(request.form.get("a2")); b2=float(request.form.get("b2")); c2=float(request.form.get("c2"))
 
-        pdf.add_subtitle("Datos ingresados (Forma Estandar)")
+        pdf.add_subtitle("Datos ingresados (Forma Estándar)")
         pdf.add_data_row("Ecuacion 1", f"{a1}x + {b1}y = {c1}")
         pdf.add_data_row("Ecuacion 2", f"{a2}x + {b2}y = {c2}")
         pdf.ln(5)
@@ -1724,7 +1724,7 @@ def pdf_sistema2x2():
         B = np.array([c1,c2])
         x, y = np.linalg.solve(A, B)
 
-        pdf.add_subtitle("Proceso de solucion")
+        pdf.add_subtitle("Proceso de solución")
         pdf.add_step("Paso 1:", f"Determinante: det = ({a1})({b2}) - ({a2})({b1}) = {det:.4f}")
         pdf.add_step("Paso 2:", f"x = ({c1}*{b2} - {c2}*{b1}) / {det:.4f} = {x:.4f}")
         pdf.add_step("Paso 3:", f"y = ({a1}*{c2} - {a2}*{c1}) / {det:.4f} = {y:.4f}")
@@ -1742,7 +1742,7 @@ def pdf_sistema2x2():
     img_path = guardar_imagen_temp(fig)
 
     pdf.ln(5)
-    pdf.add_subtitle("Grafica")
+    pdf.add_subtitle("Gráfica")
     pdf.image(img_path, x=15, w=180)
 
     buf = io.BytesIO()
@@ -1773,9 +1773,9 @@ def pdf_sistema3x3():
     result = np.linalg.solve(A, B)
     xv, yv, zv = result
 
-    pdf.add_subtitle("Proceso de solucion")
+    pdf.add_subtitle("Proceso de solución")
     pdf.add_step("Paso 1:", f"Determinante: det(A) = {det_val:.4f}")
-    pdf.add_step("Paso 2:", "Resolver usando eliminacion gaussiana")
+    pdf.add_step("Paso 2:", "Resolver usando eliminación gaussiana")
     pdf.add_step("Resultado:", f"x = {xv:.4f}, y = {yv:.4f}, z = {zv:.4f}")
     pdf.add_step("Verificar:", f"Ec.1: {a1}({xv:.2f})+{b1}({yv:.2f})+{c1}({zv:.2f}) = {a1*xv+b1*yv+c1*zv:.4f}")
     pdf.add_step("", f"Ec.2: {a2}({xv:.2f})+{b2}({yv:.2f})+{c2}({zv:.2f}) = {a2*xv+b2*yv+c2*zv:.4f}")
