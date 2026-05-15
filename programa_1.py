@@ -256,9 +256,25 @@ button:hover, .btn:hover{
 .input-label{
     color:#94a3b8;
     font-size:13px;
-    margin-top:12px;
-    margin-bottom:-8px;
+    margin-top:6px;
+    margin-bottom:2px;
     display:block;
+}
+
+.input-row{
+    display:flex;
+    gap:12px;
+    align-items:flex-end;
+    margin-top:10px;
+}
+
+.input-row .input-group{
+    flex:1;
+}
+
+.input-row .input-group input{
+    width:100%;
+    margin-top:4px;
 }
 
 </style>
@@ -536,21 +552,29 @@ def lineal():
 
     if tipo == "pendiente":
         html_inputs = f"""
-        <span class="input-label">Pendiente (m)</span>
-        <input name="m" placeholder="ej: 2" value="{val_m}">
-        <span class="input-label">Intercepción (b)</span>
-        <input name="b" placeholder="ej: -3" value="{val_b}">
+        <div class="input-row">
+        <div class="input-group"><span class="input-label">Pendiente (m)</span>
+        <input name="m" placeholder="ej: 2" value="{val_m}"></div>
+        <div class="input-group"><span class="input-label">Intercepción (b)</span>
+        <input name="b" placeholder="ej: -3" value="{val_b}"></div>
+        </div>
         """
     else:
         html_inputs = f"""
-        <span class="input-label">Punto 1 - X1</span>
-        <input name="x1" placeholder="ej: 1" value="{val_x1}">
-        <span class="input-label">Punto 1 - Y1</span>
-        <input name="y1" placeholder="ej: 2" value="{val_y1}">
-        <span class="input-label">Punto 2 - X2</span>
-        <input name="x2" placeholder="ej: 4" value="{val_x2}">
-        <span class="input-label">Punto 2 - Y2</span>
-        <input name="y2" placeholder="ej: 8" value="{val_y2}">
+        <p style="color:#94a3b8; font-size:14px; margin-top:10px;">Punto 1</p>
+        <div class="input-row">
+        <div class="input-group"><span class="input-label">X1</span>
+        <input name="x1" placeholder="ej: 1" value="{val_x1}"></div>
+        <div class="input-group"><span class="input-label">Y1</span>
+        <input name="y1" placeholder="ej: 2" value="{val_y1}"></div>
+        </div>
+        <p style="color:#94a3b8; font-size:14px; margin-top:10px;">Punto 2</p>
+        <div class="input-row">
+        <div class="input-group"><span class="input-label">X2</span>
+        <input name="x2" placeholder="ej: 4" value="{val_x2}"></div>
+        <div class="input-group"><span class="input-label">Y2</span>
+        <input name="y2" placeholder="ej: 8" value="{val_y2}"></div>
+        </div>
         """
 
     pdf_btn = ""
@@ -754,12 +778,14 @@ def cuadratica():
 <h2>ax2 + bx + c = 0</h2>
 
 <form method="POST">
-<span class="input-label">Coeficiente a (x2)</span>
-<input name="a" placeholder="ej: 1" value="{val_a}">
-<span class="input-label">Coeficiente b (x)</span>
-<input name="b" placeholder="ej: -2" value="{val_b}">
-<span class="input-label">Termino independiente c</span>
-<input name="c" placeholder="ej: -3" value="{val_c}">
+<div class="input-row">
+<div class="input-group"><span class="input-label">Coeficiente a (x²)</span>
+<input name="a" placeholder="ej: 1" value="{val_a}"></div>
+<div class="input-group"><span class="input-label">Coeficiente b (x)</span>
+<input name="b" placeholder="ej: -2" value="{val_b}"></div>
+<div class="input-group"><span class="input-label">Término c</span>
+<input name="c" placeholder="ej: -3" value="{val_c}"></div>
+</div>
 
 <div class="buttons-row">
 <button>Calcular</button>
@@ -894,21 +920,25 @@ def sistema2x2():
 
 <form method="POST">
 
-<p style="color:#94a3b8; font-size:14px; margin-top:10px;">Ecuación 1: a1*x + b1*y = c1</p>
-<span class="input-label">a1</span>
-<input name="a1" placeholder="ej: 2" value="{va1}">
-<span class="input-label">b1</span>
-<input name="b1" placeholder="ej: 3" value="{vb1}">
-<span class="input-label">c1</span>
-<input name="c1" placeholder="ej: 8" value="{vc1}">
+<p style="color:#94a3b8; font-size:14px; margin-top:10px;">Ecuación 1: a1·x + b1·y = c1</p>
+<div class="input-row">
+<div class="input-group"><span class="input-label">a1</span>
+<input name="a1" placeholder="ej: 2" value="{va1}"></div>
+<div class="input-group"><span class="input-label">b1</span>
+<input name="b1" placeholder="ej: 3" value="{vb1}"></div>
+<div class="input-group"><span class="input-label">c1</span>
+<input name="c1" placeholder="ej: 8" value="{vc1}"></div>
+</div>
 
-<p style="color:#94a3b8; font-size:14px; margin-top:20px;">Ecuacion 2: a2*x + b2*y = c2</p>
-<span class="input-label">a2</span>
-<input name="a2" placeholder="ej: 1" value="{va2}">
-<span class="input-label">b2</span>
-<input name="b2" placeholder="ej: -1" value="{vb2}">
-<span class="input-label">c2</span>
-<input name="c2" placeholder="ej: 1" value="{vc2}">
+<p style="color:#94a3b8; font-size:14px; margin-top:20px;">Ecuación 2: a2·x + b2·y = c2</p>
+<div class="input-row">
+<div class="input-group"><span class="input-label">a2</span>
+<input name="a2" placeholder="ej: 1" value="{va2}"></div>
+<div class="input-group"><span class="input-label">b2</span>
+<input name="b2" placeholder="ej: -1" value="{vb2}"></div>
+<div class="input-group"><span class="input-label">c2</span>
+<input name="c2" placeholder="ej: 1" value="{vc2}"></div>
+</div>
 
 <div class="buttons-row">
 <button>Resolver</button>
@@ -1024,35 +1054,41 @@ def sistema3x3():
 
 <form method="POST">
 
-<p style="color:#94a3b8; font-size:14px; margin-top:10px;">Ecuación 1: a1*x + b1*y + c1*z = d1</p>
-<span class="input-label">a1</span>
-<input name="a1" placeholder="ej: 2" value="{va1}">
-<span class="input-label">b1</span>
-<input name="b1" placeholder="ej: 1" value="{vb1}">
-<span class="input-label">c1</span>
-<input name="c1" placeholder="ej: -1" value="{vc1}">
-<span class="input-label">d1</span>
-<input name="d1" placeholder="ej: 8" value="{vd1}">
+<p style="color:#94a3b8; font-size:14px; margin-top:10px;">Ecuación 1: a1·x + b1·y + c1·z = d1</p>
+<div class="input-row">
+<div class="input-group"><span class="input-label">a1</span>
+<input name="a1" placeholder="ej: 2" value="{va1}"></div>
+<div class="input-group"><span class="input-label">b1</span>
+<input name="b1" placeholder="ej: 1" value="{vb1}"></div>
+<div class="input-group"><span class="input-label">c1</span>
+<input name="c1" placeholder="ej: -1" value="{vc1}"></div>
+<div class="input-group"><span class="input-label">d1</span>
+<input name="d1" placeholder="ej: 8" value="{vd1}"></div>
+</div>
 
-<p style="color:#94a3b8; font-size:14px; margin-top:20px;">Ecuación 2: a2*x + b2*y + c2*z = d2</p>
-<span class="input-label">a2</span>
-<input name="a2" placeholder="ej: -3" value="{va2}">
-<span class="input-label">b2</span>
-<input name="b2" placeholder="ej: -1" value="{vb2}">
-<span class="input-label">c2</span>
-<input name="c2" placeholder="ej: 2" value="{vc2}">
-<span class="input-label">d2</span>
-<input name="d2" placeholder="ej: -11" value="{vd2}">
+<p style="color:#94a3b8; font-size:14px; margin-top:20px;">Ecuación 2: a2·x + b2·y + c2·z = d2</p>
+<div class="input-row">
+<div class="input-group"><span class="input-label">a2</span>
+<input name="a2" placeholder="ej: -3" value="{va2}"></div>
+<div class="input-group"><span class="input-label">b2</span>
+<input name="b2" placeholder="ej: -1" value="{vb2}"></div>
+<div class="input-group"><span class="input-label">c2</span>
+<input name="c2" placeholder="ej: 2" value="{vc2}"></div>
+<div class="input-group"><span class="input-label">d2</span>
+<input name="d2" placeholder="ej: -11" value="{vd2}"></div>
+</div>
 
-<p style="color:#94a3b8; font-size:14px; margin-top:20px;">Ecuacion 3: a3*x + b3*y + c3*z = d3</p>
-<span class="input-label">a3</span>
-<input name="a3" placeholder="ej: -2" value="{va3}">
-<span class="input-label">b3</span>
-<input name="b3" placeholder="ej: 1" value="{vb3}">
-<span class="input-label">c3</span>
-<input name="c3" placeholder="ej: 2" value="{vc3}">
-<span class="input-label">d3</span>
-<input name="d3" placeholder="ej: -3" value="{vd3}">
+<p style="color:#94a3b8; font-size:14px; margin-top:20px;">Ecuación 3: a3·x + b3·y + c3·z = d3</p>
+<div class="input-row">
+<div class="input-group"><span class="input-label">a3</span>
+<input name="a3" placeholder="ej: -2" value="{va3}"></div>
+<div class="input-group"><span class="input-label">b3</span>
+<input name="b3" placeholder="ej: 1" value="{vb3}"></div>
+<div class="input-group"><span class="input-label">c3</span>
+<input name="c3" placeholder="ej: 2" value="{vc3}"></div>
+<div class="input-group"><span class="input-label">d3</span>
+<input name="d3" placeholder="ej: -3" value="{vd3}"></div>
+</div>
 
 <div class="buttons-row">
 <button>Resolver</button>
