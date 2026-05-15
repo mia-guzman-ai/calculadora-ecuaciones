@@ -707,7 +707,7 @@ def lineal():
 
 <div class="card">
 
-<h2>Ecuacion Lineal</h2>
+<h2>Ecuación Lineal</h2>
 
 <h2>Las ecuaciones lineales son igualdades matemáticas de primer grado donde las incognitas tienen exponente 1, representando una linea recta al graficarse.</h2>
 
@@ -781,7 +781,7 @@ def cuadratica():
                 <div class="proceso">
                 <h3>Proceso de solucion</h3>
 
-                <div class="paso"><strong>Paso 1:</strong> Forma vertice:
+                <div class="paso"><strong>Paso 1:</strong> Forma vértice:
                 <br><span class="formula">y = a(x - h)2 + k</span></div>
 
                 <div class="paso"><strong>Paso 2:</strong> Valores ingresados: a = {a}, h = {h}, k = {k}
@@ -791,7 +791,7 @@ def cuadratica():
                 <br><span class="formula">y = {a}(x2 - {2*h}x + {h**2}) + {k}</span>
                 <br><span class="formula">y = {a}x2 + ({b:.4f})x + ({c:.4f})</span></div>
 
-                <div class="paso"><strong>Paso 4:</strong> Vertice de la parábola:
+                <div class="paso"><strong>Paso 4:</strong> Vértice de la parábola:
                 <br><span class="formula">Vertice = ({h}, {k})</span></div>
 
                 <div class="paso"><strong>Paso 5:</strong> Discriminante:
@@ -914,7 +914,7 @@ def cuadratica():
 
                 if tipo != "vertice":
                     proceso += f"""
-                    <div class="paso"><strong>Vertice:</strong> El vértice de la parábola se encuentra en:
+                    <div class="paso"><strong>Vértice:</strong> El vértice de la parábola se encuentra en:
                     <br><span class="formula">xv = -b / (2a) = -({b}) / (2 * {a}) = {vx:.4f}</span>
                     <br><span class="formula">yv = f({vx:.4f}) = {vy:.4f}</span>
                     <br><span class="formula">Vertice = ({vx:.4f}, {vy:.4f})</span></div>
@@ -994,7 +994,7 @@ def cuadratica():
         """
 
     pdf_btn = ""
-    if sol and sol != "Datos invalidos":
+    if sol and sol != "Datos inválidos":
         pdf_btn = f"""
         <form method="POST" action="/pdf/cuadratica" style="display:inline">
         <input type="hidden" name="tipo" value="{tipo}">
@@ -1017,7 +1017,7 @@ def cuadratica():
 <div class="main">
 
 <div class="card">
-<h2>Cuadratica</h2>
+<h2>Ecuación Cuadrática</h2>
 
 <h2>Una ecuación cuadrática es una ecuacián algebraica de segundo grado donde la variable esta elevada al cuadrado.</h2>
 
